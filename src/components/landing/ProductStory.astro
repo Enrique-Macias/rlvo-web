@@ -1,0 +1,40 @@
+---
+import ProductScreen from '../ProductScreen.astro';
+import { site } from '../../config/site';
+---
+<section id="la-app" class="product-story wrap" aria-labelledby="app-title">
+  <div class="story-heading"><p class="eyebrow">01 / La app</p><h2 id="app-title" class="section-title">Lo que buscas.<br /><em>Lo que ya no usas.</em></h2><p>Hay mucho por descubrir entre estudiantes.<br />Y algo tuyo podría ser el próximo hallazgo de alguien más.</p></div>
+  <div class="story-grid">
+    <article class="discover-story">
+      <div class="story-art discovery-art"><span class="art-word" aria-hidden="true">Encuentra.</span><div class="discovery-phone"><ProductScreen name="category-browse" alt="Captura real de la categoría Electrónica, con publicaciones y favoritos." sizes="(max-width: 767px) 290px, 320px" /></div><span class="art-index" aria-hidden="true">01 — EXPLORA</span></div>
+      <div class="story-copy"><h3>Tu siguiente hallazgo,<br />en tu comunidad.</h3><p>Explora publicaciones por categoría y guarda tus favoritos. Conoce los detalles antes de contactar a quien vende.</p></div>
+    </article>
+    <article class="publish-story">
+      <div class="story-art publish-art"><span class="art-word" aria-hidden="true">Comparte.</span><div class="publish-screen"><ProductScreen name="create-listing" alt="Captura real de nueva publicación: fotos, título, precio, categoría y condición." framed={false} sizes="(max-width: 767px) 300px, 360px" /></div><span class="art-index" aria-hidden="true">02 — PUBLICA</span></div>
+      <div class="story-copy"><h3>De tus manos,<br />a las de alguien más.</h3><p>Añade hasta cinco fotos, una descripción y un precio. Dale a otro estudiante la información para decidir.</p></div>
+    </article>
+  </div>
+  <p class="screen-note product-disclaimer">Las imágenes son capturas reales de una versión previa al lanzamiento. Algunas muestran {site.previousBrand}, el nombre anterior de {site.brand}. Los campus, publicaciones y cifras visibles pertenecen a las capturas; no anuncian universidades participantes ni resultados del lanzamiento.</p>
+</section>
+<style>
+  .product-story { padding-block: 6rem; }
+  .story-heading { display: grid; grid-template-columns: 1.3fr 1fr; gap: 1.5rem 4rem; margin-bottom: 3rem; }
+  .story-heading .eyebrow { grid-column: 1 / -1; }
+  .story-heading > p:last-child { max-width: 360px; align-self: end; padding-bottom: .5rem; font-size: .875rem; color: var(--ink-soft); line-height: 1.8; }
+  .story-grid { display: grid; grid-template-columns: 1.12fr 1fr; gap: 3rem; }
+  .publish-story { padding-top: 5rem; }
+  .story-art { position: relative; height: 510px; border-radius: 16px; overflow: hidden; }
+  .discovery-art { background: color-mix(in srgb, var(--forest) 12%, var(--paper)); }
+  .publish-art { background: color-mix(in srgb, var(--gold) 14%, var(--paper)); }
+  .art-word { position: absolute; top: 20px; left: 28px; font: 500 clamp(2.75rem, 4.5vw, 4rem)/1.2 var(--display); letter-spacing: -.06em; }
+  .discovery-art .art-word { color: var(--forest); }
+  .discovery-phone { position: absolute; width: 320px; left: 50%; top: 110px; transform: translateX(-50%) rotate(-5deg); }
+  .publish-screen { position: absolute; width: 360px; left: 50%; top: 125px; transform: translateX(-50%) rotate(4deg); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; box-shadow: 0 20px 40px -25px var(--ink); }
+  .art-index { position: absolute; z-index: 2; left: 20px; bottom: 18px; font-size: .6rem; letter-spacing: .14em; background: var(--paper); padding: .35rem .6rem; }
+  .story-copy { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; padding-top: 1.75rem; }
+  h3 { font: 500 1.65rem/1.15 var(--display); letter-spacing: -.035em; }
+  .story-copy p { font-size: .75rem; line-height: 1.8; color: var(--ink-soft); }
+  .product-disclaimer { max-width: 750px; margin-top: 3rem; }
+  @media (max-width: 1000px) { .story-copy { grid-template-columns: 1fr; gap: .75rem; } .story-grid { gap: 1.5rem; } .publish-screen { width: 310px; } }
+  @media (max-width: 767px) { .product-story { padding-block: 4rem; } .story-heading { grid-template-columns: 1fr; gap: 1.5rem; } .story-grid { grid-template-columns: 1fr; gap: 2.5rem; } .publish-story { padding-top: 0; } .story-art { height: 490px; } .art-word { left: 20px; font-size: 3.2rem; } .discovery-phone { width: 290px; } .publish-screen { width: 300px; } .story-copy p { font-size: .875rem; } .story-copy { padding-top: 1.25rem; } }
+</style>

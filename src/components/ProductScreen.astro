@@ -1,0 +1,20 @@
+---
+interface Props {
+  name: 'home-marketplace' | 'category-browse' | 'create-listing' | 'user-profile' | 'product-detail';
+  alt: string;
+  priority?: boolean;
+  sizes?: string;
+  class?: string;
+  framed?: boolean;
+}
+const { name, alt, priority = false, sizes = '(max-width: 767px) 300px, 320px', class: className, framed = true } = Astro.props;
+---
+<div class:list={['product-screen', { framed }, className]}>
+  <img src={`/media/${name}-640.webp`} srcset={[360,512,640,960].map(w => `/media/${name}-${w}.webp ${w}w`).join(', ')} sizes={sizes} width="1206" height="2622" alt={alt} loading={priority ? 'eager' : 'lazy'} fetchpriority={priority ? 'high' : 'auto'} decoding="async" />
+</div>
+<style>
+  .product-screen { background: var(--paper); overflow: hidden; }
+  .framed { padding: 5px; background: var(--ink); border: 1px solid color-mix(in srgb, var(--ink) 60%, var(--card)); border-radius: 20px; box-shadow: 0 24px 48px -20px color-mix(in srgb, var(--ink) 35%, transparent); }
+  .framed img { border-radius: 16px; }
+  img { width: 100%; }
+</style>

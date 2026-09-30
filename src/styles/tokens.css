@@ -1,0 +1,13 @@
+:root {
+  --ink: #221F1C;
+  --ink-soft: #6B6660;
+  --paper: #F3F0EA;
+  --card: #FFFFFF;
+  --brick: #C1440E;
+  --forest: #2F6B4F;
+  --gold: #D9A441;
+  --slate: #5B6B78;
+  --line: color-mix(in srgb, var(--ink) 18%, transparent);
+  --display: 'Fraunces Variable', Georgia, serif;
+  --body: 'Inter Variable', Arial, sans-serif;
+}

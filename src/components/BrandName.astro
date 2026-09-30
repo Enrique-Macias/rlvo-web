@@ -1,0 +1,8 @@
+---
+import { site } from '../config/site';
+---
+<a class="wordmark" href="/" aria-label={`${site.brand}, inicio`}>{site.brand}<span aria-hidden="true">.</span></a>
+<style>
+  .wordmark { font-family: var(--display); font-size: 2.1rem; font-weight: 600; letter-spacing: -.08em; text-decoration: none; display: inline-flex; align-items: center; min-height: 44px; }
+  .wordmark span { color: var(--brick); }
+</style>

@@ -1,0 +1,20 @@
+---
+import ContentLayout from '../layouts/ContentLayout.astro';
+import PendingInfo from '../components/PendingInfo.astro';
+import { site } from '../config/site';
+const toc = [{id:'responsable',label:'Responsable'},{id:'datos',label:'Datos de la app'},{id:'proveedores',label:'Proveedores'},{id:'conservacion',label:'Conservación y eliminación'},{id:'derechos',label:'Derechos sobre tus datos'}];
+---
+<ContentLayout page="/privacidad" title="Aviso de privacidad" label="Privacidad" intro={`Información documentada sobre los datos utilizados por la aplicación móvil de ${site.brand}.`} date={site.legalDates.privacy} toc={toc} draft>
+  <section id="responsable"><h2>Responsable del tratamiento</h2><PendingInfo item="responsible" /></section>
+  <section id="datos"><h2>Datos de la aplicación</h2><ul>
+    <li><strong>Correo universitario.</strong> Se utiliza para verificar la cuenta, únicamente con dominios admitidos. No es visible para otros usuarios.</li>
+    <li><strong>Perfil.</strong> Nombre, foto de perfil opcional, universidad, campus y carrera.</li>
+    <li><strong>Teléfono.</strong> Se utiliza para el contacto por WhatsApp. No es público; se entrega el teléfono de un vendedor a la vez al abrir su WhatsApp.</li>
+    <li><strong>Publicaciones.</strong> Título, descripción, precio, categoría, condición y hasta cinco fotos.</li>
+    <li><strong>Actividad.</strong> Reseñas, calificaciones, reportes y favoritos.</li>
+    <li><strong>Notificaciones.</strong> Token de notificaciones push.</li>
+  </ul><PendingInfo item="push" /><h3>Ubicación aproximada</h3><p>Se obtiene y utiliza únicamente en el dispositivo para sugerir el campus más cercano. No se envía a Supabase ni a terceros y no se guarda en la base de datos ni en el almacenamiento local.</p></section>
+  <section id="proveedores"><h2>Proveedores documentados</h2><ul><li><strong>Supabase:</strong> base de datos, autenticación y almacenamiento de fotos.</li><li><strong>Expo Push Notification Service:</strong> notificaciones.</li><li><strong>Google Workspace:</strong> correos de soporte y contacto.</li></ul><h3>Moderación de contenido</h3><p>La documentación contempla Google Cloud Vision para fotos, OpenAI para título y descripción y Amazon Rekognition para fotos relacionadas con drogas, alcohol, tabaco y apuestas. La selección activa al lanzamiento está pendiente de confirmación.</p><PendingInfo item="providers" /></section>
+  <section id="conservacion"><h2>Conservación y eliminación</h2><PendingInfo item="retention" /><PendingInfo item="deletion" /><PendingInfo item="suspension" /><p>La información sobre este proceso se reunirá en <a href="/eliminar-cuenta">Eliminación de cuenta</a>.</p></section>
+  <section id="derechos"><h2>Derechos sobre tus datos</h2><PendingInfo item="arco" /><p>Los canales generales de contacto y soporte no se presentan en este borrador como el medio confirmado para ejercer estos derechos.</p></section>
+</ContentLayout>

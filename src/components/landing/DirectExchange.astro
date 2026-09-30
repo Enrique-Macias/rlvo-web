@@ -1,0 +1,21 @@
+---
+import ProductScreen from '../ProductScreen.astro';
+import { site } from '../../config/site';
+---
+<section class="direct-section wrap" aria-labelledby="direct-title">
+  <div class="direct-copy"><p class="eyebrow">04 / De persona a persona</p><h2 id="direct-title">La conexión empieza aquí.<br /><em>El acuerdo es entre ustedes.</em></h2><p>Encuentra una publicación, revisa sus detalles y contacta al vendedor por WhatsApp. Ustedes coordinan la compra, el pago y la entrega.</p><p class="direct-fact">En su versión inicial, {site.brand} no procesa pagos ni ofrece logística integrada.</p></div>
+  <figure class="detail-figure"><div class="detail-window"><ProductScreen name="product-detail" alt="Captura real del detalle de una publicación con precio, información del vendedor y descripción." framed={false} sizes="(max-width: 767px) 300px, 300px" /></div><figcaption class="screen-note">Detalle de una publicación en la app.</figcaption></figure>
+</section>
+<style>
+  .direct-section { display: grid; grid-template-columns: 1.3fr 1fr; align-items: center; gap: 5rem; padding-block: 3rem 5rem; border-top: 1px solid var(--line); }
+  .eyebrow { margin-bottom: 1.5rem; }
+  h2 { font-size: clamp(2.1rem, 4vw, 3.5rem); }
+  h2 em { font-style: normal; color: var(--brick); }
+  .direct-copy > p:not(.eyebrow) { font-size: .875rem; line-height: 1.8; color: var(--ink-soft); max-width: 430px; margin-top: 1.5rem; }
+  .direct-copy > p.direct-fact { border-left: 2px solid var(--brick); padding-left: 1rem; color: var(--ink); font-size: .8125rem; }
+  .detail-figure { max-width: 300px; justify-self: center; width: 100%; transform: rotate(3deg); }
+  .detail-window { height: 330px; overflow: hidden; border: 1px solid var(--line); border-radius: 16px; box-shadow: 0 18px 40px -30px var(--ink); }
+  .detail-window :global(img) { margin-top: -270px; }
+  figcaption { margin-top: 1rem; }
+  @media (max-width: 767px) { .direct-section { grid-template-columns: 1fr; gap: 2.5rem; padding-block: 3rem; } .detail-figure { transform: none; } }
+</style>

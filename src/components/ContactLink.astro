@@ -1,0 +1,11 @@
+---
+import { site } from '../config/site';
+interface Props { kind: 'contact' | 'support' }
+const { kind } = Astro.props;
+const email = kind === 'contact' ? site.contactEmail : site.supportEmail;
+---
+<a class="email-link" href={`mailto:${email}`}>{email}<span aria-hidden="true">↗</span></a>
+<style>
+  .email-link { display: inline-flex; align-items: center; gap: 1rem; padding-block: .75rem; min-height: 44px; font-size: clamp(1rem, 3vw, 1.7rem); font-family: var(--display); text-decoration: none; border-bottom: 1px solid var(--brick); color: var(--brick); overflow-wrap: anywhere; }
+  .email-link:hover { color: var(--ink); }
+</style>

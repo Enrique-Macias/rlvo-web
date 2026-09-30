@@ -1,0 +1,9 @@
+---
+import ContentLayout from '../layouts/ContentLayout.astro';
+import ContactLink from '../components/ContactLink.astro';
+import { site } from '../config/site';
+---
+<ContentLayout page="/contacto" title="La conversación empieza aquí." label="Contacto" intro={`Para consultas generales sobre ${site.brand}, escríbenos. Nos interesa saber de ti.`}>
+  <section><h2>Contacto general</h2><ContactLink kind="contact" /></section>
+  <section><h2>¿Buscas ayuda con la app?</h2><p>Encuentra el canal correspondiente en nuestra página de <a href="/soporte">soporte</a>.</p></section>
+</ContentLayout>

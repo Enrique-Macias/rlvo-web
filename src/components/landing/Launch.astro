@@ -1,0 +1,17 @@
+---
+import { site } from '../../config/site';
+---
+<section id="lanzamiento" class="launch-section" aria-labelledby="launch-title"><div class="wrap launch-inner"><div class="launch-top"><p class="eyebrow">Lo próximo se encuentra cerca</p><span class="launch-arrow" aria-hidden="true">↗</span></div><h2 id="launch-title">Nos vemos<br /><span>en {site.brand}.</span></h2><div class="launch-bottom"><p>Tu comunidad universitaria.<br />Una nueva forma de conectar.</p><div class="launch-label"><span class="launch-dot" aria-hidden="true"></span>{site.launch.label}<small>La app todavía no está disponible en tiendas.</small></div></div></div></section>
+<style>
+  .launch-section { background: var(--brick); color: var(--paper); padding-block: 3rem; }
+  .launch-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+  .launch-arrow { font: 400 5rem/.7 var(--display); }
+  h2 { font-size: clamp(4.5rem, 12vw, 10rem); margin-block: 1.75rem 2.75rem; line-height: .95; letter-spacing: -.06em; }
+  h2 span { padding-left: 13%; }
+  .launch-bottom { display: flex; justify-content: space-between; align-items: flex-end; gap: 2rem; padding-top: 1.75rem; border-top: 1px solid color-mix(in srgb, var(--paper) 40%, transparent); }
+  .launch-bottom p { font-size: .8125rem; }
+  .launch-label { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: .5rem .6rem; font-size: 1rem; font-weight: 500; }
+  .launch-dot { width: 7px; height: 7px; background: var(--paper); border-radius: 50%; }
+  small { grid-column: 1 / -1; font-size: .6875rem; font-weight: 400; }
+  @media (max-width: 767px) { .launch-section { padding-block: 2.5rem; } .eyebrow { font-size: .55rem; } .launch-arrow { font-size: 3rem; } h2 { font-size: clamp(4.25rem, 17vw, 7rem); } h2 span { padding-left: 5%; } .launch-bottom { flex-direction: column; align-items: start; gap: 1.5rem; } }
+</style>

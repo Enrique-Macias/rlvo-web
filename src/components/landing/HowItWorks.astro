@@ -1,0 +1,29 @@
+---
+import { site } from '../../config/site';
+const steps = [
+  { title: 'Empieza con tu correo universitario.', body: `La verificación utiliza correos institucionales de los dominios admitidos por ${site.brand}.` },
+  { title: 'Descubre o publica.', body: 'Encuentra algo que te interese o crea una publicación con fotos y detalles de tu producto.' },
+  { title: 'Conecta con otro estudiante.', body: 'Revisa la publicación y continúa la conversación por WhatsApp.' },
+  { title: 'Coordinen directamente.', body: 'Comprador y vendedor acuerdan el pago y la entrega entre sí.' },
+];
+---
+<section id="como-funciona" class="how-section" aria-labelledby="how-title">
+  <div class="wrap how-layout"><div class="how-heading"><p class="eyebrow">02 / Cómo funciona</p><h2 id="how-title" class="section-title">De encontrarlo<br />a <em>conectar.</em></h2><p>Cuatro pasos.<br />Una conversación entre estudiantes.</p><span class="journey-arrow" aria-hidden="true">↳</span></div>
+    <ol>{steps.map((step, i) => <li><span class="step-number" aria-hidden="true">0{i + 1}</span><div><h3>{step.title}</h3><p>{step.body}</p></div></li>)}</ol>
+  </div>
+</section>
+<style>
+  .how-section { background: var(--ink); color: var(--paper); padding-block: 5rem; }
+  .how-layout { display: grid; grid-template-columns: 1fr 1.1fr; gap: 5rem; }
+  .eyebrow { color: var(--paper); opacity: .8; margin-bottom: 2rem; }
+  h2 em { color: var(--gold); }
+  .how-heading > p:not(.eyebrow) { font-size: .875rem; margin-top: 1.75rem; color: color-mix(in srgb, var(--paper) 75%, var(--ink)); }
+  .journey-arrow { font: 400 8rem/.9 var(--display); color: var(--gold); display: block; margin-top: 2rem; }
+  ol { list-style: none; margin: 0; padding: 0; }
+  li { display: grid; grid-template-columns: 2.5rem 1fr; gap: 1.5rem; padding-block: 1.6rem; border-top: 1px solid color-mix(in srgb, var(--paper) 23%, transparent); }
+  li:last-child { border-bottom: 1px solid color-mix(in srgb, var(--paper) 23%, transparent); }
+  .step-number { font: 400 1.1rem/1.4 var(--display); color: var(--gold); }
+  h3 { font-size: 1rem; font-weight: 500; margin-bottom: .75rem; }
+  li p { font-size: .8125rem; color: color-mix(in srgb, var(--paper) 75%, var(--ink)); line-height: 1.8; }
+  @media (max-width: 767px) { .how-section { padding-block: 3.5rem; } .how-layout { grid-template-columns: 1fr; gap: 2rem; } .journey-arrow { display: none; } .eyebrow { margin-bottom: 1.5rem; } li { gap: .75rem; } }
+</style>

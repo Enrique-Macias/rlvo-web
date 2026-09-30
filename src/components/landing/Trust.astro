@@ -1,0 +1,25 @@
+---
+import ProductScreen from '../ProductScreen.astro';
+---
+<section id="comunidad" class="trust wrap" aria-labelledby="trust-title">
+  <div class="trust-visual"><span class="trust-background" aria-hidden="true"></span><figure><div class="profile-window"><ProductScreen name="user-profile" alt="Captura real del perfil de un usuario: verificación, calificaciones y publicaciones." framed={false} sizes="(max-width: 767px) 300px, 350px" /></div><figcaption class="screen-note">Perfil de la app en desarrollo.<br />Las calificaciones mostradas pertenecen a esta captura.</figcaption></figure><span class="trust-seal" aria-hidden="true">✓</span></div>
+  <div class="trust-copy"><p class="eyebrow">03 / Comunidad</p><h2 id="trust-title" class="section-title">Más contexto.<br /><em>Más comunidad.</em></h2><p class="trust-intro">Conectar también es saber un poco más de la persona al otro lado.</p><dl><div><dt>Correo universitario</dt><dd>La verificación vincula la cuenta con un correo institucional admitido.</dd></div><div><dt>Reseñas y calificaciones</dt><dd>Una referencia adicional al conocer a otros usuarios.</dd></div><div><dt>Reportes y moderación</dt><dd>Herramientas para reportar contenido y revisar publicaciones.</dd></div></dl><p class="note">La verificación y estas herramientas no garantizan la identidad, la conducta de una persona ni una transacción.</p></div>
+</section>
+<style>
+  .trust { display: grid; grid-template-columns: 1fr 1.05fr; gap: 5rem; align-items: center; padding-block: 6rem; }
+  .trust-visual { position: relative; padding: 35px 20px 0; }
+  .trust-background { position: absolute; inset: 0 0 75px; border-radius: 50% 50% 16px 16px; background: color-mix(in srgb, var(--forest) 10%, var(--paper)); }
+  figure { position: relative; max-width: 350px; margin-inline: auto; }
+  .profile-window { height: 440px; border-radius: 16px; border: 1px solid var(--line); overflow: hidden; box-shadow: 0 20px 40px -25px var(--ink); }
+  figcaption { margin-top: 1.5rem; }
+  .trust-seal { position: absolute; top: 60px; right: 0; width: 64px; height: 64px; border-radius: 50%; background: var(--forest); color: var(--paper); display: grid; place-items: center; font-size: 2rem; border: 6px solid var(--paper); }
+  .eyebrow { color: var(--forest); margin-bottom: 1.5rem; }
+  .trust-copy h2 { font-size: clamp(2.4rem, 4.7vw, 4rem); }
+  .trust-copy h2 em { color: var(--forest); }
+  .trust-intro { margin-top: 1.5rem; font-size: .875rem; color: var(--ink-soft); max-width: 360px; }
+  dl { margin: 1.5rem 0; }
+  dl > div { padding-block: 1rem; border-bottom: 1px solid var(--line); }
+  dt { font-size: .8125rem; font-weight: 600; margin-bottom: .4rem; }
+  dd { margin: 0; font-size: .75rem; color: var(--ink-soft); }
+  @media (max-width: 767px) { .trust { grid-template-columns: 1fr; gap: 2.5rem; padding-block: 4rem; } .trust-copy { order: -1; } .trust-visual { max-width: 420px; width: 100%; margin-inline: auto; } figure { max-width: 300px; } .profile-window { height: 390px; } .trust-seal { right: 0; } }
+</style>

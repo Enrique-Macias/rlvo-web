@@ -1,0 +1,64 @@
+---
+import { site } from '../../config/site';
+import LaunchStatus from '../LaunchStatus.astro';
+import ProductScreen from '../ProductScreen.astro';
+---
+<section class="hero wrap" aria-labelledby="hero-title">
+  <div class="hero-copy">
+    <p class="eyebrow">El marketplace de tu comunidad</p>
+    <h1 id="hero-title">Tu comunidad.<br />Tu próximo<br /><em>hallazgo.</em></h1>
+    <p class="hero-description">Compra y vende entre estudiantes de tu comunidad universitaria. Una app para conectar, descubrir y dar el siguiente paso.</p>
+    <div class="hero-actions"><a class="pill-link" href="#la-app">Conoce la app <span aria-hidden="true">↗</span></a><LaunchStatus /></div>
+    <p class="verification"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6Z"/><path d="m8 12 3 3 5-6"/></svg>Verificación con correo universitario.</p>
+  </div>
+  <figure class="hero-visual">
+    <div class="visual-field" aria-hidden="true"><div class="orbit"></div><span class="field-label">DE ESTUDIANTE<br />A ESTUDIANTE</span><span class="field-arrow">↗</span></div>
+    <div class="secondary-phone"><ProductScreen name="category-browse" alt="Captura real: descubrimiento de publicaciones en una categoría." sizes="(max-width: 767px) 1px, 210px" /></div>
+    <div class="main-phone"><ProductScreen name="home-marketplace" alt={`Pantalla de inicio de ${site.brand}, todavía identificada como ${site.previousBrand}: campus, verificación universitaria y categorías.`} priority sizes="(max-width: 767px) 280px, 290px" /></div>
+    <span class="visual-caption">Un campus.<br /><span>Muchas posibilidades.</span></span>
+    <figcaption class="screen-note">Captura real de la app en desarrollo.</figcaption>
+  </figure>
+</section>
+<div class="intro-strip wrap"><span>DESCUBRE</span><span class="strip-mark" aria-hidden="true">↗</span><span>PUBLICA</span><span class="strip-mark" aria-hidden="true">↗</span><span>CONECTA</span><span class="strip-end">Entre estudiantes, todo empieza con una conexión.</span></div>
+<style>
+  .hero { display: grid; grid-template-columns: 1.08fr 1fr; align-items: center; min-height: 730px; gap: 2rem; padding-block: 4rem; }
+  .hero-copy { position: relative; z-index: 2; }
+  .hero .eyebrow { color: var(--brick); margin-bottom: 1.75rem; }
+  h1 { font-size: clamp(3.5rem, 6.5vw, 5.6rem); line-height: .99; }
+  h1 em { color: var(--brick); font-style: normal; }
+  .hero-description { max-width: 390px; margin-top: 1.75rem; color: var(--ink-soft); font-size: .9375rem; line-height: 1.8; }
+  .hero-actions { display: flex; align-items: center; gap: 1.5rem; margin-top: 1.75rem; }
+  .verification { display: flex; align-items: center; gap: .5rem; font-size: .6875rem; margin-top: 1.75rem; color: var(--forest); }
+  .hero-visual { position: relative; height: 595px; min-width: 0; }
+  .visual-field { position: absolute; inset: 15px 0 35px 4%; background: color-mix(in srgb, var(--brick) 9%, var(--paper)); border-radius: 160px 160px 16px 16px; overflow: hidden; }
+  .orbit { width: 540px; height: 540px; border: 1px solid color-mix(in srgb, var(--brick) 28%, transparent); border-radius: 50%; position: absolute; top: 70px; left: -25px; }
+  .orbit::after { content: ''; position: absolute; inset: 45px; border: inherit; border-radius: inherit; }
+  .field-label { position: absolute; left: 23px; top: 285px; font-size: .6rem; letter-spacing: .13em; line-height: 1.7; color: var(--ink); transform: rotate(-90deg); transform-origin: left top; }
+  .field-arrow { position: absolute; right: 20px; top: 30px; font: 500 6rem/1 var(--display); color: var(--brick); }
+  .main-phone { position: absolute; width: 265px; top: 0; left: 15%; transform: rotate(-5deg); z-index: 2; }
+  .secondary-phone { position: absolute; width: 200px; right: 0; top: 110px; transform: rotate(8deg); }
+  .visual-caption { position: absolute; z-index: 3; bottom: 43px; right: -8px; background: var(--paper); border: 1px solid var(--line); padding: .9rem 1.25rem; transform: rotate(3deg); font: 500 1.3rem/1.25 var(--display); box-shadow: 0 10px 20px -15px var(--ink); }
+  .visual-caption span { color: var(--brick); }
+  figcaption { position: absolute; bottom: 0; right: 0; }
+  .intro-strip { display: flex; gap: 2rem; align-items: center; padding-block: 1.5rem; border-block: 1px solid var(--line); font-size: .625rem; font-weight: 600; letter-spacing: .14em; }
+  .strip-mark { font-size: 1.25rem; color: var(--brick); }
+  .strip-end { margin-left: auto; color: var(--ink-soft); font-size: .6875rem; font-weight: 400; letter-spacing: 0; }
+  @media (min-width: 1100px) { .hero { gap: 3rem; } .main-phone { width: 275px; } .secondary-phone { width: 210px; right: 5px; } }
+  @media (max-width: 900px) and (min-width: 768px) { .hero { gap: 1rem; } .main-phone { left: 5%; width: 225px; top: 30px; } .secondary-phone { width: 160px; right: -10px; top: 160px; } .hero-visual { height: 560px; } .visual-caption { font-size: 1.1rem; } .hero-actions { gap: .75rem; flex-wrap: wrap; } }
+  @media (max-width: 767px) {
+    .hero { grid-template-columns: 1fr; padding-block: 2.75rem 1.5rem; gap: 2.5rem; }
+    h1 { font-size: clamp(2.9rem, 12vw, 5.5rem); }
+    .hero .eyebrow { font-size: .6rem; margin-bottom: 1.4rem; }
+    .hero-description { font-size: .875rem; max-width: 430px; }
+    .hero-actions { gap: 1rem; }
+    .hero-actions :global(.pill-link) { gap: 1rem; padding-inline: 1.2rem; }
+    .hero-visual { height: 660px; width: 100%; max-width: 420px; margin-inline: auto; }
+    .visual-field { inset: 20px -10px 40px; }
+    .main-phone { width: 280px; left: 50%; top: 5px; transform: translateX(-50%) rotate(-2deg); }
+    .secondary-phone { display: none; }
+    .visual-caption { bottom: 36px; right: -6px; font-size: 1.2rem; }
+    .field-arrow { top: 0; right: 5px; font-size: 4rem; }
+    .intro-strip { justify-content: space-between; gap: .5rem; font-size: .6rem; }
+    .strip-end { display: none; }
+  }
+</style>

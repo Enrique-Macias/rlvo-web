@@ -1,0 +1,10 @@
+---
+import ContentLayout from '../layouts/ContentLayout.astro';
+import PendingInfo from '../components/PendingInfo.astro';
+import { site } from '../config/site';
+---
+<ContentLayout page="/eliminar-cuenta" title="Eliminación de cuenta" label="Tu cuenta" intro="Aquí se publicará el procedimiento confirmado para eliminar tu cuenta y la información asociada." date={site.legalDates.deletion} draft>
+  <section><h2>Estado del procedimiento</h2><p>El flujo de eliminación todavía está pendiente de confirmación. Esta página es informativa y no realiza operaciones sobre tu cuenta.</p><PendingInfo item="deletion" /></section>
+  <section><h2>Datos que podrían conservarse</h2><PendingInfo item="suspension" /><p>El alcance definitivo y los plazos se incorporarán una vez que el procedimiento esté confirmado.</p></section>
+  <section><h2>Información relacionada</h2><p>Consulta el <a href="/privacidad">borrador del aviso de privacidad</a> para conocer los datos documentados de la aplicación.</p></section>
+</ContentLayout>

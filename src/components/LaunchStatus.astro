@@ -1,0 +1,11 @@
+---
+import { site } from '../config/site';
+interface Props { large?: boolean }
+const { large = false } = Astro.props;
+---
+<span class:list={['launch-status', { large }]}><span class="status-dot" aria-hidden="true"></span>{site.launch.label}</span>
+<style>
+  .launch-status { display: inline-flex; align-items: center; gap: .6rem; font-size: .75rem; font-weight: 500; white-space: nowrap; }
+  .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--forest); }
+  .large { font-size: 1rem; border: 1px solid var(--line); padding: .7rem 1.15rem; border-radius: 999px; }
+</style>

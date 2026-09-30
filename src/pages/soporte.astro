@@ -1,0 +1,13 @@
+---
+import ContentLayout from '../layouts/ContentLayout.astro';
+import ContactLink from '../components/ContactLink.astro';
+import { site } from '../config/site';
+---
+<ContentLayout page="/soporte" title="Estamos para orientarte." label="Soporte" intro={`Encuentra información sobre ${site.brand} y el canal para consultas de soporte.`}>
+  <section><h2>Escríbenos</h2><ContactLink kind="support" /></section>
+  <section><h2>Antes de empezar</h2>
+    <details><summary>¿Ya puedo descargar la app?</summary><p>La aplicación todavía no está publicada en las tiendas. Su estado es: {site.launch.label}.</p></details>
+    <details><summary>¿Cómo se verifica la cuenta?</summary><p>La verificación se realiza mediante correo universitario de los dominios admitidos por {site.brand}. Las universidades del lanzamiento se comunicarán cuando estén confirmadas.</p></details>
+    <details><summary>¿Dónde puedo consultar la eliminación de cuenta?</summary><p>En <a href="/eliminar-cuenta">Eliminación de cuenta</a> puedes consultar el estado de la información. El procedimiento todavía está pendiente de confirmación; el correo de soporte no es un mecanismo oficial de eliminación.</p></details>
+  </section>
+</ContentLayout>

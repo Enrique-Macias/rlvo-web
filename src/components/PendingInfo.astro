@@ -1,0 +1,6 @@
+---
+import { pending, type PendingKey } from '../content/legal';
+interface Props { item: PendingKey }
+const { item } = Astro.props;
+---
+<p class="pending">{`[[POR CONFIRMAR: ${pending[item]}]]`}</p>

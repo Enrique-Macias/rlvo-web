@@ -1,0 +1,14 @@
+---
+import ContentLayout from '../layouts/ContentLayout.astro';
+import PendingInfo from '../components/PendingInfo.astro';
+import { site } from '../config/site';
+const toc = [{id:'identificacion',label:'Identificación y alcance'},{id:'cuenta',label:'Cuenta y acceso'},{id:'publicaciones',label:'Publicaciones'},{id:'moderacion',label:'Moderación'},{id:'eliminacion',label:'Eliminación'},{id:'jurisdiccion',label:'Ley y jurisdicción'}];
+---
+<ContentLayout page="/terminos" title="Términos de uso" label="Términos" intro={`Borrador de información para los términos de ${site.brand}. Las condiciones definitivas están pendientes de revisión.`} date={site.legalDates.terms} toc={toc} draft>
+  <section id="identificacion"><h2>Identificación y alcance</h2><PendingInfo item="responsible" /><p>Este borrador reúne hechos documentados sobre la cuenta, las publicaciones y la moderación de la aplicación. No incorpora condiciones no confirmadas.</p></section>
+  <section id="cuenta"><h2>Cuenta y acceso</h2><p>La cuenta utiliza correo universitario para la verificación, únicamente con dominios admitidos. El perfil incluye nombre, foto opcional, universidad, campus y carrera.</p><PendingInfo item="age" /></section>
+  <section id="publicaciones"><h2>Publicaciones y contacto</h2><p>Las publicaciones incluyen título, descripción, precio, categoría, condición y hasta cinco fotos.</p><p>El teléfono se utiliza para contactar por WhatsApp. No es público: se entrega el teléfono de un vendedor a la vez cuando se abre su WhatsApp.</p><p>La aplicación contempla reseñas, calificaciones, reportes y favoritos.</p></section>
+  <section id="moderacion"><h2>Moderación de contenido</h2><p>Existe revisión automática antes de publicar. Las publicaciones dudosas quedan pendientes de revisión humana y las bloqueadas dejan de ser visibles. También existe suspensión de cuentas.</p><PendingInfo item="providers" /><PendingInfo item="suspension" /></section>
+  <section id="eliminacion"><h2>Eliminación de cuenta</h2><PendingInfo item="deletion" /><p>Consulta el estado de esta información en <a href="/eliminar-cuenta">Eliminación de cuenta</a>.</p></section>
+  <section id="jurisdiccion"><h2>Ley aplicable y jurisdicción</h2><PendingInfo item="jurisdiction" /></section>
+</ContentLayout>

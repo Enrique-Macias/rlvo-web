@@ -1,0 +1,24 @@
+---
+import { site } from '../config/site';
+import BrandName from './BrandName.astro';
+import LaunchStatus from './LaunchStatus.astro';
+---
+<header class="site-header wrap">
+  <div class="brand-lockup"><BrandName /><span class="brand-context">Entre<br />estudiantes.</span></div>
+  <nav aria-label="Navegación principal">{site.navigation.map(item => <a href={item.href}>{item.label}</a>)}</nav>
+  <div class="header-status"><LaunchStatus /></div>
+</header>
+<style>
+  .site-header { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; min-height: 100px; border-bottom: 1px solid var(--line); }
+  .brand-lockup { display: flex; align-items: center; gap: 1.2rem; }
+  .brand-context { font-size: .625rem; line-height: 1.45; border-left: 1px solid var(--line); padding-left: 1rem; }
+  nav { display: flex; gap: 2rem; }
+  nav a { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; min-width: 44px; font-size: .75rem; text-decoration: none; }
+  nav a:hover { color: var(--brick); }
+  @media (max-width: 767px) {
+    .site-header { min-height: 108px; flex-wrap: wrap; padding-block: .8rem .4rem; column-gap: .5rem; row-gap: .25rem; }
+    nav { order: 3; width: 100%; justify-content: space-between; gap: .75rem; }
+    nav a { font-size: .6875rem; }
+    .brand-context { display: none; }
+  }
+</style>

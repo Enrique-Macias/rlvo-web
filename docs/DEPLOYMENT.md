@@ -9,6 +9,23 @@ compatible con la configuración actual de Astro.
 
 No asumir Vercel.
 
+### Configuración preparada para la primera versión
+
+Se utilizará Cloudflare Workers Static Assets para servir la salida estática
+de Astro desde `dist/`. `wrangler.jsonc` contiene únicamente la configuración
+del alojamiento: no tiene `main`, bindings, secretos ni adaptador SSR.
+
+`assets.not_found_handling` usa `404-page`; las rutas inexistentes deben
+responder 404 y mostrar `404.html`. `html_handling` usa `drop-trailing-slash`,
+coherente con las rutas canónicas de Astro. El dominio raíz conserva `/`.
+
+La configuración es local. Esta implementación no crea un proyecto de
+Cloudflare, no publica versiones ni modifica DNS. La creación del recurso,
+conexión del dominio, redirección de `www` y despliegue requieren una
+instrucción explícita posterior.
+
+Referencia: https://developers.cloudflare.com/workers/framework-guides/web-apps/astro/
+
 ---
 
 ## Dominio
@@ -60,6 +77,14 @@ Como mínimo contemplar:
 
 No añadir secretos si el sitio continúa siendo completamente estático.
 
+Local: `npm run dev`. Revisión del artefacto: `npm run preview`.
+Preview no indexable: `npm run build:preview`, que establece `SITE_ENV=preview`
+durante el build. Producción: `npm run build`.
+
+Las previews tienen `noindex`, robots bloqueado y no generan sitemap indexable.
+Estos mecanismos no restringen el acceso al contenido. Cualquier protección
+de acceso deberá configurarse explícitamente al preparar el alojamiento.
+
 ---
 
 ## Build
@@ -73,6 +98,11 @@ y:
 npm run check
 
 sin errores.
+
+El build ejecuta una auditoría estática de páginas, enlaces, anchors, metadata
+y assets. Advierte cuando hay información legal pendiente. Los documentos
+legales deben revisarse y completarse antes de publicar; el build exitoso no
+significa que estén aprobados.
 
 ---
 

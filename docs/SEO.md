@@ -29,6 +29,22 @@ Cada página indexable debe definir:
 - Open Graph description
 - Open Graph image cuando exista
 
+### Estado de la primera implementación
+
+La configuración por ruta vive en `src/config/site.ts`. `/`, `/contacto` y
+`/soporte` son indexables en el build de producción. `/privacidad`, `/terminos`
+y `/eliminar-cuenta` conservan `noindex, follow` mientras sean borradores con
+datos pendientes. `/404` también lleva `noindex, follow`.
+
+Solo las rutas indexables se incluyen en el sitemap. Los canonical usan el
+dominio principal y rutas sin slash final, salvo `/`. Open Graph incluye tipo,
+marca, locale, título, descripción y URL. La imagen queda pendiente en
+`site.seo.image`; no se referencia un archivo inexistente.
+
+`SITE_ENV=preview` fuerza `noindex` en todas las páginas y robots bloqueado.
+El build normal restaura la política de producción. Cuando los documentos
+legales estén aprobados, se actualizará su metadata de indexación.
+
 ---
 
 ## Sitemap
