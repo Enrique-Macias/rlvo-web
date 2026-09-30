@@ -108,5 +108,9 @@ Soporte:
 
 soporte@rlvo.com.mx
 
+Privacidad y derechos sobre datos personales:
+
+privacidad@rlvo.com.mx
+
 No mostrar correos personales de founders como canales públicos salvo
 instrucción explícita.

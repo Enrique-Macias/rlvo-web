@@ -1,13 +1,22 @@
-// Única fuente factual: docs/LEGAL_FACTS.md. Estos textos siguen siendo borradores.
+// Fuentes: LEGAL_FACTS.md y las especificaciones legales derivadas en /docs.
+// Solo permanecen aquí decisiones todavía abiertas o pendientes de validación.
 export const pending = {
-  responsible: 'nombre del responsable del tratamiento, persona física o moral, y domicilio',
-  age: 'edad mínima para utilizar la aplicación',
-  jurisdiction: 'ley aplicable y jurisdicción',
-  arco: 'correo o medio y procedimiento para ejercer derechos sobre datos personales (ARCO)',
-  push: 'qué se guarda exactamente del token de notificaciones push',
-  providers: 'cuáles de Google Cloud Vision, OpenAI y Amazon Rekognition estarán en producción al lanzar',
-  suspension: 'confirmar con el flujo real de eliminación si se conserva un hash del correo de una cuenta suspendida para impedir un nuevo registro',
-  deletion: 'ruta exacta en la app para eliminar la cuenta; qué se borra del perfil, publicaciones, fotos de Storage y reseñas; qué se conserva, por cuánto tiempo y plazo de eliminación',
-  retention: 'periodos de conservación de los datos personales',
+  legalName: 'razón social definitiva de la entidad responsable',
+  interimResponsible: 'nombre completo de la persona responsable mientras no exista una sociedad constituida',
+  responsibleAddress: 'domicilio empresarial o fiscal del responsable',
+  privacyLegalReview: 'fundamentos jurídicos, finalidades en su redacción legal y versión definitiva del aviso de privacidad',
+  arco: 'procedimiento formal, requisitos, plazos y redacción de los derechos ARCO conforme a la legislación mexicana vigente',
+  providerClassification: 'clasificación jurídica de cada proveedor y tratamiento aplicable a transferencias nacionales o internacionales',
+  moderationMechanism: 'fundamento jurídico y redacción exacta del mecanismo de acción afirmativa para proveedores de moderación',
+  sentryRetention: 'periodo configurado de conservación de diagnósticos en Sentry y verificación de que evita datos personales innecesarios',
+  moderationAcceptanceRetention: 'periodo jurídicamente válido para conservar fecha y versión de la acción relativa a proveedores de moderación',
+  suspendedHash: 'fundamento jurídico, proporcionalidad y conservación indefinida del hash de correo de cuentas suspendidas',
+  retentionLegalReview: 'validación jurídica de periodos de conservación, anonimización y excepciones aplicables',
+  deletionImplementation: 'implementación y pruebas del flujo de eliminación en Supabase Auth, base de datos y Storage antes del lanzamiento',
+  externalDeletionVerification: 'procedimiento definitivo para verificar la identidad en solicitudes de eliminación realizadas fuera de la aplicación',
+  ipChannel: 'canal oficial para reclamos de propiedad intelectual',
+  contentLicense: 'redacción jurídica definitiva de la licencia limitada sobre contenido del usuario',
+  liabilityConsumer: 'redacción sobre responsabilidad, obligaciones de protección al consumidor y resolución de controversias',
+  jurisdiction: 'ley aplicable, jurisdicción, competencia y mecanismos de resolución de controversias',
 } as const;
 export type PendingKey = keyof typeof pending;

@@ -5,7 +5,7 @@ const root = path.resolve('dist');
 const files = await readdir(root, { recursive: true });
 const htmlFiles = files.filter(file => file.endsWith('.html'));
 let failures = 0;
-let pendingCount = 0;
+const markerCounts = { 'POR CONFIRMAR': 0, PENDIENTE: 0, 'VALIDAR CON ABOGADO': 0 };
 let scriptCount = 0;
 const pages = new Map();
 for (const file of htmlFiles) pages.set(file, await readFile(path.join(root, file), 'utf8'));
@@ -23,7 +23,9 @@ for (const [file, html] of pages) {
   const scripts = html.match(/<script(?:\s|>)/g) ?? [];
   scriptCount += scripts.length;
   if (scripts.length) fail('JavaScript inesperado: revisar el alcance estático');
-  pendingCount += (html.match(/\[\[POR CONFIRMAR/g) ?? []).length;
+  for (const marker of Object.keys(markerCounts)) {
+    markerCounts[marker] += (html.match(new RegExp(`\\[\\[${marker}`, 'g')) ?? []).length;
+  }
   for (const match of html.matchAll(/<(?:img|script|link)\b[^>]*\b(?:src|href)="(https?:\/\/[^\"]+)"/g)) {
     if (!match[0].includes('rel="canonical"')) fail(`Recurso externo inesperado: ${match[1]}`);
   }
@@ -39,6 +41,13 @@ for (const [file, html] of pages) {
     try { await stat(path.join(root, match[1])); } catch { fail(`Imagen inexistente: ${match[1]}`); }
   }
 }
+for (const file of ['privacidad.html', 'terminos.html', 'eliminar-cuenta.html']) {
+  const html = pages.get(file) ?? '';
+  if (!html.includes('mailto:privacidad@rlvo.com.mx')) {
+    console.error(`${file}: falta el canal de privacidad configurado`);
+    failures++;
+  }
+}
 const sitemapFiles = files.filter(file => /sitemap.*\.xml$/.test(file));
 if (process.env.SITE_ENV !== 'preview' && sitemapFiles.length === 0) { console.error('Sitemap ausente'); failures++; }
 for (const file of sitemapFiles) {
@@ -48,5 +57,6 @@ for (const file of sitemapFiles) {
 const robots = await readFile(path.join(root, 'robots.txt'), 'utf8');
 if (process.env.SITE_ENV !== 'preview' && robots.includes('Disallow: /')) { console.error('Producción bloqueada en robots'); failures++; }
 console.log(`Auditoría estática: ${htmlFiles.length} páginas, enlaces y anchors revisados; ${scriptCount} scripts de cliente.`);
-if (pendingCount) console.warn(`ADVERTENCIA: ${pendingCount} marcadores POR CONFIRMAR en páginas legales. Son borradores noindex. Resolver y revisar antes de producción.`);
+const markerSummary = Object.entries(markerCounts).filter(([, count]) => count > 0).map(([name, count]) => `${name}: ${count}`).join(', ');
+if (markerSummary) console.warn(`ADVERTENCIA: marcadores legales en páginas generadas (${markerSummary}). Son borradores noindex. Resolver y revisar antes de producción.`);
 if (failures) process.exit(1);

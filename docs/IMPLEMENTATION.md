@@ -118,26 +118,26 @@ certifica por sí sola cumplimiento completo de WCAG.
 Las herramientas de QA se instalaron fuera del repositorio, en
 `/private/tmp/rlvo-qa`, y no forman parte de las dependencias del sitio.
 
-## Información pendiente antes de producción
+## Actualización legal del 30 de septiembre de 2026
 
-Existen 12 textos distintos de POR CONFIRMAR, repetidos 18 veces en las páginas:
+Las páginas de privacidad, términos y eliminación incorporan los hechos y
+especificaciones de `LEGAL_FACTS.md`, `PRIVACY_SPEC.md`, `TERMS_SPEC.md`,
+`ACCOUNT_DELETION.md`, `CONTENT_POLICY.md` y `DATA_RETENTION.md`.
 
-1. Fecha de actualización del aviso de privacidad.
-2. Fecha de actualización de los términos.
-3. Fecha de actualización de la información de eliminación.
-4. Responsable del tratamiento y domicilio.
-5. Edad mínima.
-6. Ley aplicable y jurisdicción.
-7. Medio y procedimiento ARCO.
-8. Contenido exacto del token push almacenado.
-9. Proveedores de moderación activos al lanzamiento.
-10. Conservación del hash del correo de cuentas suspendidas tras eliminarlas.
-11. Ruta, alcance, conservación y plazo del proceso de eliminación.
-12. Periodos de conservación de datos personales.
+Se resolvieron los marcadores anteriores sobre edad, push, proveedores de
+moderación, ruta y alcance de eliminación y periodos que ya cuentan con una
+decisión de producto. Los documentos conservan 20 textos distintos de
+`POR CONFIRMAR`, con 23 apariciones, exclusivamente para fechas, decisiones
+corporativas, validación jurídica o implementación que todavía debe probarse.
 
-Los tres documentos siguen visibles y noindex. También faltan revisión legal
-final, imagen Open Graph oficial y URLs de tiendas cuando la app se publique.
-No se requiere una fecha de lanzamiento para comunicar “Próximamente”.
+Los tres documentos continúan como borradores visibles con `noindex` y fuera
+del sitemap. `privacidad@rlvo.com.mx` es el canal centralizado para privacidad
+y solicitudes relacionadas con datos personales.
+
+La auditoría posterior a esta actualización confirmó 0 errores de Astro o
+TypeScript, build estático correcto, navegación y anchors válidos, 0 scripts
+de cliente, ausencia de overflow horizontal a 360, 390, 768 y 1280 px, y 0
+violaciones detectadas por axe-core 4.13 en las tres páginas legales.
 
 ## Ajustes respecto al plan
 

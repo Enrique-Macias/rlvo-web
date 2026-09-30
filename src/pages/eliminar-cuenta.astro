@@ -1,10 +1,64 @@
 ---
 import ContentLayout from '../layouts/ContentLayout.astro';
+import ContactLink from '../components/ContactLink.astro';
 import PendingInfo from '../components/PendingInfo.astro';
 import { site } from '../config/site';
+const toc = [
+  { id: 'desde-app', label: 'Desde la app' },
+  { id: 'elimina', label: 'Qué se elimina' },
+  { id: 'conserva', label: 'Qué puede permanecer' },
+  { id: 'asistencia', label: 'Asistencia' },
+  { id: 'estado', label: 'Estado operativo' },
+];
 ---
-<ContentLayout page="/eliminar-cuenta" title="Eliminación de cuenta" label="Tu cuenta" intro="Aquí se publicará el procedimiento confirmado para eliminar tu cuenta y la información asociada." date={site.legalDates.deletion} draft>
-  <section><h2>Estado del procedimiento</h2><p>El flujo de eliminación todavía está pendiente de confirmación. Esta página es informativa y no realiza operaciones sobre tu cuenta.</p><PendingInfo item="deletion" /></section>
-  <section><h2>Datos que podrían conservarse</h2><PendingInfo item="suspension" /><p>El alcance definitivo y los plazos se incorporarán una vez que el procedimiento esté confirmado.</p></section>
-  <section><h2>Información relacionada</h2><p>Consulta el <a href="/privacidad">borrador del aviso de privacidad</a> para conocer los datos documentados de la aplicación.</p></section>
+<ContentLayout page="/eliminar-cuenta" title="Eliminación de cuenta" label="Tu cuenta" intro={`Consulta el procedimiento definido para eliminar una cuenta de ${site.brand} y el tratamiento de la información asociada.`} date={site.legalDates.deletion} toc={toc} draft>
+  <section id="desde-app">
+    <h2>Eliminar tu cuenta desde la app</h2>
+    <p>El método principal se realiza directamente en la aplicación móvil:</p>
+    <p><strong>Perfil → Configuración → Eliminar cuenta</strong></p>
+    <p>La operación requiere confirmar tu contraseña. No existe periodo de espera ni recuperación: después de una confirmación correcta, la eliminación comienza inmediatamente.</p>
+    <p>Esta página es informativa. No elimina cuentas, no contiene un formulario y no se conecta con Supabase.</p>
+  </section>
+
+  <section id="elimina">
+    <h2>Qué información se elimina</h2>
+    <p>El flujo definido debe eliminar la información personal de la cuenta, incluida:</p>
+    <ul>
+      <li>Cuenta de Supabase Auth, perfil, correo institucional y número de teléfono.</li>
+      <li>Fotografía de perfil, publicaciones y fotografías asociadas almacenadas en Supabase Storage.</li>
+      <li>Favoritos, contactos atribuibles al usuario, intereses y tokens de notificaciones push.</li>
+      <li>Reseñas recibidas, registro de comprador y referencias o notificaciones que contengan el nombre o publicaciones del usuario cuando corresponda.</li>
+    </ul>
+    <p>No existe un periodo de recuperación previsto después de la eliminación.</p>
+  </section>
+
+  <section id="conserva">
+    <h2>Qué información puede conservarse o anonimizarse</h2>
+    <h3>Reseñas escritas</h3>
+    <p>Puede conservarse únicamente la calificación en estrellas de forma anónima. Se eliminan la identidad del autor y el comentario. Las reseñas recibidas por la cuenta eliminada se borran.</p>
+    <h3>Reportes</h3>
+    <p>Los reportes creados o recibidos pueden permanecer sin la identidad del usuario eliminado durante 12 meses después de su resolución.</p>
+    <h3>Registros de moderación</h3>
+    <p>Puede permanecer un registro mínimo durante 12 meses para reincidencias o disputas. No deben conservarse fotografías originales únicamente para este fin.</p>
+    <h3>Cuenta suspendida</h3>
+    <p>Si la cuenta estaba suspendida, la decisión actual del producto es conservar indefinidamente un hash SHA-256 derivado del correo institucional para impedir un nuevo registro con ese correo. El correo original se elimina. Esta medida requiere validación jurídica antes del lanzamiento.</p>
+    <PendingInfo item="suspendedHash" />
+    <PendingInfo item="retentionLegalReview" />
+  </section>
+
+  <section id="asistencia">
+    <h2>Si no puedes acceder a la aplicación</h2>
+    <p>Solicita asistencia mediante el canal de privacidad:</p>
+    <ContactLink kind="privacy" />
+    <p>RLVO deberá verificar la identidad de quien solicita la eliminación usando únicamente la información mínima necesaria antes de ejecutar una solicitud externa.</p>
+    <PendingInfo item="externalDeletionVerification" />
+    <p>Para otras consultas técnicas puedes escribir a <a href={`mailto:${site.supportEmail}`}>{site.supportEmail}</a>.</p>
+  </section>
+
+  <section id="estado">
+    <h2>Estado operativo antes del lanzamiento</h2>
+    <p>El comportamiento descrito es la especificación confirmada del producto. Antes del lanzamiento debe comprobarse que la operación del servidor elimine efectivamente Auth, base de datos y Storage, y que aplique correctamente las reglas de anonimización y conservación.</p>
+    <PendingInfo item="deletionImplementation" />
+    <p>Consulta también el <a href="/privacidad">borrador del aviso de privacidad</a>.</p>
+  </section>
 </ContentLayout>

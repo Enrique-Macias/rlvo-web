@@ -2,13 +2,107 @@
 import ContentLayout from '../layouts/ContentLayout.astro';
 import PendingInfo from '../components/PendingInfo.astro';
 import { site } from '../config/site';
-const toc = [{id:'identificacion',label:'Identificación y alcance'},{id:'cuenta',label:'Cuenta y acceso'},{id:'publicaciones',label:'Publicaciones'},{id:'moderacion',label:'Moderación'},{id:'eliminacion',label:'Eliminación'},{id:'jurisdiccion',label:'Ley y jurisdicción'}];
+const toc = [
+  { id: 'servicio', label: 'Servicio y elegibilidad' },
+  { id: 'cuenta', label: 'Cuenta' },
+  { id: 'publicaciones', label: 'Publicaciones' },
+  { id: 'moderacion', label: 'Moderación y reportes' },
+  { id: 'operaciones', label: 'Operaciones directas' },
+  { id: 'resenas', label: 'Reseñas' },
+  { id: 'contenido', label: 'Contenido y propiedad' },
+  { id: 'eliminacion', label: 'Eliminación' },
+  { id: 'canales', label: 'Canales oficiales' },
+  { id: 'pendientes', label: 'Revisión jurídica' },
+];
 ---
-<ContentLayout page="/terminos" title="Términos de uso" label="Términos" intro={`Borrador de información para los términos de ${site.brand}. Las condiciones definitivas están pendientes de revisión.`} date={site.legalDates.terms} toc={toc} draft>
-  <section id="identificacion"><h2>Identificación y alcance</h2><PendingInfo item="responsible" /><p>Este borrador reúne hechos documentados sobre la cuenta, las publicaciones y la moderación de la aplicación. No incorpora condiciones no confirmadas.</p></section>
-  <section id="cuenta"><h2>Cuenta y acceso</h2><p>La cuenta utiliza correo universitario para la verificación, únicamente con dominios admitidos. El perfil incluye nombre, foto opcional, universidad, campus y carrera.</p><PendingInfo item="age" /></section>
-  <section id="publicaciones"><h2>Publicaciones y contacto</h2><p>Las publicaciones incluyen título, descripción, precio, categoría, condición y hasta cinco fotos.</p><p>El teléfono se utiliza para contactar por WhatsApp. No es público: se entrega el teléfono de un vendedor a la vez cuando se abre su WhatsApp.</p><p>La aplicación contempla reseñas, calificaciones, reportes y favoritos.</p></section>
-  <section id="moderacion"><h2>Moderación de contenido</h2><p>Existe revisión automática antes de publicar. Las publicaciones dudosas quedan pendientes de revisión humana y las bloqueadas dejan de ser visibles. También existe suspensión de cuentas.</p><PendingInfo item="providers" /><PendingInfo item="suspension" /></section>
-  <section id="eliminacion"><h2>Eliminación de cuenta</h2><PendingInfo item="deletion" /><p>Consulta el estado de esta información en <a href="/eliminar-cuenta">Eliminación de cuenta</a>.</p></section>
-  <section id="jurisdiccion"><h2>Ley aplicable y jurisdicción</h2><PendingInfo item="jurisdiction" /></section>
+<ContentLayout page="/terminos" title="Términos de uso" label="Términos" intro={`Borrador de las reglas de uso de ${site.brand}. Su redacción jurídica definitiva requiere revisión antes del lanzamiento.`} date={site.legalDates.terms} toc={toc} draft>
+  <section id="servicio">
+    <h2>Servicio y elegibilidad</h2>
+    <p>{site.brand} proporciona un marketplace móvil para que integrantes de comunidades universitarias admitidas descubran publicaciones, publiquen productos, contacten a otros usuarios y coordinen operaciones directamente.</p>
+    <p>El servicio está dirigido exclusivamente a personas de 18 años o más. No se permiten cuentas de menores; RLVO puede suspender una cuenta si detecta que incumple este requisito.</p>
+    <p>El acceso requiere un correo institucional de un dominio admitido. RLVO puede añadir o retirar dominios, solicitar una reverificación o suspender el acceso cuando existan motivos para considerar que el usuario dejó de cumplir los requisitos de la comunidad.</p>
+    <p>La verificación solo demuestra acceso al correo institucional. No es una verificación legal de identidad, no garantiza la condición actual de estudiante, la conducta del usuario ni una transacción.</p>
+  </section>
+
+  <section id="cuenta">
+    <h2>Cuenta y credenciales</h2>
+    <p>El usuario es responsable de proporcionar información correcta, utilizar su propia cuenta, mantener seguras sus credenciales y cumplir estas reglas y las políticas del servicio. La contraseña es administrada mediante Supabase Auth; RLVO no puede leerla en texto plano.</p>
+  </section>
+
+  <section id="publicaciones">
+    <h2>Publicaciones y productos prohibidos</h2>
+    <p>Una publicación puede incluir título, descripción, precio, categoría, condición y hasta cinco fotografías. El usuario es responsable de que su descripción sea exacta, de tener derecho a ofrecer el artículo, de no infringir derechos de terceros y de cumplir la legislación y las políticas aplicables.</p>
+    <p>RLVO no verifica de manera independiente la propiedad de cada artículo.</p>
+    <h3>No se permite publicar</h3>
+    <ul>
+      <li>Drogas, parafernalia, medicamentos ilegales o controlados.</li>
+      <li>Armas, alcohol, tabaco, cigarrillos, productos de vapeo o nicotina restringida.</li>
+      <li>Productos robados, falsificaciones o réplicas no autorizadas presentadas como auténticas.</li>
+      <li>Contenido sexual prohibido o material principalmente violento.</li>
+      <li>Identificaciones, credenciales, documentos personales o materiales que faciliten suplantación o fraude.</li>
+      <li>Cuentas digitales, animales, entradas fraudulentas, duplicadas, inválidas o engañosas, y productos o actividades de apuestas prohibidas.</li>
+    </ul>
+    <p>RLVO puede restringir información de contacto en títulos o descripciones. El mecanismo previsto es “Contactar por WhatsApp”.</p>
+  </section>
+
+  <section id="moderacion">
+    <h2>Moderación, reportes y suspensiones</h2>
+    <p>RLVO puede analizar texto e imágenes, utilizar reconocimiento óptico de texto, bloquear una publicación antes de publicarla, enviarla a revisión humana, retirar contenido o una foto de perfil, advertir y suspender cuentas. La moderación automática ayuda a aplicar las políticas, pero no garantiza detectar todas las infracciones.</p>
+    <p>Los usuarios pueden reportar publicaciones y usuarios. RLVO puede revisar o descartar un reporte, retirar contenido, suspender cuentas o tomar otras medidas conforme a sus políticas. La identidad del reportante no se revela a la persona reportada.</p>
+    <h3>Medidas y reincidencia</h3>
+    <p>Las medidas pueden incluir advertencia, retiro de contenido, suspensión temporal o suspensión permanente. Se consideran gravedad, contexto, repetición, riesgo, fraude, acoso, spam, abuso e intentos de evadir la moderación. Entre tres y cinco reincidencias pueden producir una suspensión permanente según su gravedad; una infracción grave puede provocar suspensión inmediata.</p>
+    <h3>Apelaciones</h3>
+    <p>Las medidas pueden apelarse en <a href={`mailto:${site.supportEmail}`}>{site.supportEmail}</a>. El objetivo operativo es responder en un máximo de 10 días hábiles; este objetivo no constituye un plazo legal.</p>
+  </section>
+
+  <section id="operaciones">
+    <h2>Operaciones directas entre usuarios</h2>
+    <p>Comprador y vendedor acuerdan directamente el precio, el método de pago, el lugar, la entrega y las demás condiciones.</p>
+    <ul>
+      <li>RLVO no compra ni vende los productos y no forma parte de la compraventa.</li>
+      <li>RLVO no procesa pagos, no administra fondos, no mantiene saldos y no proporciona depósito en garantía.</li>
+      <li>RLVO no organiza envíos ni proporciona logística.</li>
+      <li>RLVO no garantiza pagos, entrega, devolución ni protección al comprador en el MVP.</li>
+    </ul>
+    <h3>Precauciones</h3>
+    <p>Los usuarios pueden encontrarse dentro o fuera del campus. RLVO recomienda utilizar lugares públicos, revisar la publicación, tomar precauciones razonables y evitar pagos o situaciones sospechosas.</p>
+  </section>
+
+  <section id="resenas">
+    <h2>Reseñas</h2>
+    <p>Las reseñas se habilitan después de que el vendedor registra una venta. Comprador y vendedor pueden calificarse con una a cinco estrellas y un comentario opcional. Su contenido debe cumplir las políticas de RLVO.</p>
+  </section>
+
+  <section id="contenido">
+    <h2>Contenido del usuario y propiedad intelectual</h2>
+    <p>El usuario conserva la propiedad de sus fotografías, textos y demás contenido original. Concede a RLVO una licencia limitada y no exclusiva únicamente en la medida necesaria para almacenar, reproducir técnicamente, mostrar, procesar y moderar ese contenido mientras se presta el servicio.</p>
+    <PendingInfo item="contentLicense" />
+    <p>No se permite contenido ni productos que infrinjan derechos de terceros. Un reclamo deberá incluir evidencia suficiente; RLVO puede retirar preventivamente una publicación durante la revisión y notificar al usuario afectado cuando corresponda.</p>
+    <PendingInfo item="ipChannel" />
+    <h3>Sin afiliación universitaria</h3>
+    <p>La disponibilidad de RLVO para una comunidad no implica asociación, patrocinio, respaldo, aprobación ni afiliación oficial con una universidad.</p>
+  </section>
+
+  <section id="eliminacion">
+    <h2>Eliminación de cuenta</h2>
+    <p>El usuario puede eliminar su cuenta mediante el flujo definido en la aplicación. La eliminación de información personal contempla excepciones documentadas de anonimización, moderación y prevención de reincidencias, sujetas a validación jurídica.</p>
+    <p>Consulta el procedimiento y sus efectos en <a href="/eliminar-cuenta">Eliminación de cuenta</a> y el tratamiento de datos en el <a href="/privacidad">Aviso de privacidad</a>.</p>
+  </section>
+
+  <section id="canales">
+    <h2>Cambios y canales oficiales</h2>
+    <p>RLVO puede comunicar cambios relevantes dentro de la aplicación o por correo. Los cambios sustanciales relacionados con privacidad deben manejarse conforme al aviso aplicable y la legislación vigente.</p>
+    <ul>
+      <li>Contacto general: <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>.</li>
+      <li>Soporte y apelaciones: <a href={`mailto:${site.supportEmail}`}>{site.supportEmail}</a>.</li>
+      <li>Privacidad y datos personales: <a href={`mailto:${site.privacyEmail}`}>{site.privacyEmail}</a>.</li>
+    </ul>
+  </section>
+
+  <section id="pendientes">
+    <h2>Puntos pendientes de revisión jurídica</h2>
+    <p>RLVO se dirige a usuarios en México y su lanzamiento inicial está previsto en Nuevo León. Estos datos operativos no sustituyen una determinación jurídica sobre las reglas aplicables.</p>
+    <PendingInfo item="liabilityConsumer" />
+    <PendingInfo item="jurisdiction" />
+  </section>
 </ContentLayout>

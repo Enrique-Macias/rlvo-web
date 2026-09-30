@@ -161,9 +161,9 @@ Pre-launch
 - [x] Account deletion page exists.
 - [x] Support page exists.
 - [x] Contact page exists.
-- [ ] Add privacidad@rlvo.com.mx where appropriate.
-- [ ] Replace resolved POR CONFIRMAR markers.
-- [ ] Keep genuinely unresolved legal items marked as pending.
+- [x] Add privacidad@rlvo.com.mx where appropriate.
+- [x] Replace resolved POR CONFIRMAR markers.
+- [x] Keep genuinely unresolved legal items marked as pending.
 - [ ] Update privacy page after counsel review.
 - [ ] Update terms page after counsel review.
 - [ ] Update account deletion page after backend implementation.

@@ -11,6 +11,7 @@ export const site = {
   ogLocale: 'es_MX',
   contactEmail: `contacto@${domain}`,
   supportEmail: `soporte@${domain}`,
+  privacyEmail: `privacidad@${domain}`,
   legalName: null,
   socialLinks: [] as { label: string; url: string }[],
   launch: {
@@ -48,7 +49,7 @@ export const pages = {
   '/': { title: site.seo.title, description: site.seo.description, index: true },
   '/privacidad': { title: `Aviso de privacidad | ${brand}`, description: `Borrador del aviso de privacidad de ${brand}. Consulta los datos y proveedores documentados y los puntos pendientes de revisión.`, index: false },
   '/terminos': { title: `Términos de uso | ${brand}`, description: `Borrador de los términos de uso de ${brand}, pendiente de revisión antes del lanzamiento.`, index: false },
-  '/eliminar-cuenta': { title: `Eliminación de cuenta | ${brand}`, description: `Información sobre la eliminación de cuenta en ${brand}. El procedimiento y sus plazos están pendientes de confirmación.`, index: false },
+  '/eliminar-cuenta': { title: `Eliminación de cuenta | ${brand}`, description: `Consulta cómo eliminar una cuenta de ${brand}, qué información se elimina y qué registros pueden conservarse o anonimizarse.`, index: false },
   '/contacto': { title: `Contacto | ${brand}`, description: `Contacta al equipo de ${brand} para consultas generales sobre el marketplace universitario.`, index: true },
   '/soporte': { title: `Soporte | ${brand}`, description: `Encuentra el canal de soporte de ${brand} y orientación sobre la aplicación y su próximo lanzamiento.`, index: true },
   '/404': { title: `Página no encontrada | ${brand}`, description: `Esta página no está disponible. Regresa al inicio de ${brand}.`, index: false },

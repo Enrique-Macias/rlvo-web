@@ -7,7 +7,7 @@ const { page, title, intro, label = 'Información', date, toc = [], draft = fals
 <BaseLayout page={page}>
   <div class="wrap content-page">
     <div class="content-heading"><a class="text-link back-link" href="/"><span aria-hidden="true">←</span> Inicio</a><p class="eyebrow">{label}</p><h1>{title}</h1><p class="intro">{intro}</p>{date && <p class="legal-date">Última actualización: <span>{date}</span></p>}</div>
-    {draft && <aside class="draft-banner"><strong>Borrador pendiente de revisión</strong><p>Este documento contiene información por confirmar y debe revisarse antes de su publicación definitiva.</p></aside>}
+    {draft && <aside class="draft-banner"><strong>Borrador pendiente de revisión jurídica</strong><p>Este documento refleja decisiones confirmadas del producto, pero todavía contiene puntos jurídicos y operativos pendientes. No es una versión legal definitiva.</p></aside>}
     <div class:list={['content-grid', { 'with-toc': toc.length > 0 }]}>
       {toc.length > 0 && <nav class="contents-nav" aria-label="Índice del documento"><p>En esta página</p><ol>{toc.map(item => <li><a href={`#${item.id}`}>{item.label}</a></li>)}</ol></nav>}
       <div class="prose"><slot /></div>

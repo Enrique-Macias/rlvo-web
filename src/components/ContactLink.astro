@@ -1,8 +1,12 @@
 ---
 import { site } from '../config/site';
-interface Props { kind: 'contact' | 'support' }
+interface Props { kind: 'contact' | 'support' | 'privacy' }
 const { kind } = Astro.props;
-const email = kind === 'contact' ? site.contactEmail : site.supportEmail;
+const email = kind === 'contact'
+  ? site.contactEmail
+  : kind === 'support'
+    ? site.supportEmail
+    : site.privacyEmail;
 ---
 <a class="email-link" href={`mailto:${email}`}>{email}<span aria-hidden="true">↗</span></a>
 <style>
