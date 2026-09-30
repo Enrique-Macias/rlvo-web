@@ -10,4 +10,10 @@
   --line: color-mix(in srgb, var(--ink) 18%, transparent);
   --display: 'Fraunces Variable', Georgia, serif;
   --body: 'Inter Variable', Arial, sans-serif;
+  --layout-page-max: 100rem;
+  --layout-page-gutter: clamp(1rem, 3.25vw, 4.5rem);
+  --layout-reading-max: 42.5rem;
+  --layout-content-max: 75rem;
+  --layout-content-sidebar: 14rem;
+  --layout-content-gap: clamp(3rem, 7vw, 8rem);
 }

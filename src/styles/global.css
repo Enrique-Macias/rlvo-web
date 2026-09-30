@@ -31,7 +31,11 @@ h1, h2, h3 { line-height: 1.1; text-wrap: balance; }
 h1, h2 { font-family: var(--display); font-weight: 500; letter-spacing: -.055em; }
 p { text-wrap: pretty; }
 img { display: block; max-width: 100%; height: auto; }
-.wrap { width: min(100% - 3rem, 1184px); margin-inline: auto; }
+.wrap {
+  width: min(100%, calc(var(--layout-page-max) + var(--layout-page-gutter) + var(--layout-page-gutter)));
+  margin-inline: auto;
+  padding-inline: var(--layout-page-gutter);
+}
 .eyebrow { font-size: .6875rem; letter-spacing: .16em; font-weight: 600; text-transform: uppercase; display: flex; align-items: center; gap: .75rem; }
 .eyebrow::before { content: ''; width: 1.5rem; height: 1px; background: currentColor; }
 .text-link { display: inline-flex; align-items: center; gap: 1.5rem; min-height: 44px; font-size: .875rem; font-weight: 500; text-decoration: none; }
@@ -47,7 +51,6 @@ img { display: block; max-width: 100%; height: auto; }
 .divider { border-top: 1px solid var(--line); }
 .screen-note { font-size: .6875rem; line-height: 1.7; color: var(--ink-soft); }
 .pending { display: block; margin-block: 1rem; padding: .875rem 1rem; background: color-mix(in srgb, var(--gold) 17%, var(--paper)); border-left: 3px solid var(--brick); overflow-wrap: anywhere; font-size: .875rem; }
-@media (min-width: 768px) { .wrap { width: min(100% - 5rem, 1184px); } }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
