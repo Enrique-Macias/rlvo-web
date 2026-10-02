@@ -4,6 +4,7 @@ import { site, type PagePath } from '../config/site';
 import SeoHead from '../components/SeoHead.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
+import CloudflareWebAnalytics from '../components/CloudflareWebAnalytics.astro';
 import interFont from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
 import frauncesFont from '@fontsource-variable/fraunces/files/fraunces-latin-wght-normal.woff2?url';
 interface Props { page: PagePath }
@@ -17,5 +18,6 @@ const { page } = Astro.props;
     <SiteHeader />
     <main id="contenido" tabindex="-1"><slot /></main>
     <SiteFooter />
+    <CloudflareWebAnalytics />
   </body>
 </html>
