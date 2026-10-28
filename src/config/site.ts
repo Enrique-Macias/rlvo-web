@@ -1,3 +1,5 @@
+import legalCurrent from './legal-current.json';
+
 const brand = 'RLVO';
 const domain = 'rlvo.com.mx';
 const url = `https://www.${domain}`;
@@ -26,10 +28,9 @@ export const site = {
     googlePlayUrl: null,
   },
   legalDates: {
-    privacy: '[[POR CONFIRMAR: fecha de actualización del aviso de privacidad]]',
-    terms: '[[POR CONFIRMAR: fecha de actualización de los términos]]',
     deletion: '[[POR CONFIRMAR: fecha de actualización de la información de eliminación]]',
   },
+  legal: { current: legalCurrent },
   seo: {
     title: `${brand} — Compra y vende entre estudiantes`,
     description: 'Un marketplace móvil para comprar y vender entre estudiantes de tu comunidad universitaria, con verificación por correo universitario. Próximamente.',
@@ -64,4 +65,5 @@ export const pages = {
 } as const;
 
 export type PagePath = keyof typeof pages;
+export interface PageMetadata { title: string; description: string; index: boolean; path: string }
 export const canonical = (path: string) => new URL(path, site.url).href;

@@ -1,0 +1,30 @@
+---
+import ContentLayout from '../layouts/ContentLayout.astro';
+import { getLegalEntry } from '../legal/registry';
+import { renderLegalBody } from '../legal/render';
+import { presentation } from '../legal/presentation';
+import { site } from '../config/site';
+import type { DocumentKind } from '../legal/canonical';
+interface Props { document: DocumentKind; version?: string }
+const { document, version } = Astro.props;
+const entry = getLegalEntry(document, version);
+const ui = presentation[document];
+const toc = entry.sections.map(({ id, title }) => ({ id, label: ui.toc[id] ?? title }));
+const html = await renderLegalBody(entry);
+const page = `/${document}` as '/terminos' | '/privacidad';
+const seo = !entry.draft ? { title: `${entry.title} — ${entry.version} | ${site.brand}`, description: entry.intro, index: false, path: `${page}/${entry.version}` } : undefined;
+const source = entry.draft ? `/legal/borradores/${document}` : `/legal/${document}/${entry.version}`;
+---
+<ContentLayout page={page} title={entry.title} label={ui.label} intro={entry.intro} date={entry.date} toc={toc} draft={entry.draft} seo={seo}>
+  <Fragment set:html={html} />
+  <nav slot="after-document" class="legal-downloads" aria-label="Archivos del documento">
+    {!entry.draft && <p>Versión {entry.version}. <a href={`${page}/${entry.version}`}>URL permanente</a></p>}
+    <a href={`${source}.md`} download>{entry.draft ? 'Descargar borrador (Markdown)' : 'Descargar documento (Markdown)'}</a>
+    <a href={`${source}.sha256`} download>Verificar SHA-256</a>
+  </nav>
+</ContentLayout>
+<style>
+  .legal-downloads { display: flex; flex-wrap: wrap; gap: .5rem 2rem; max-width: var(--layout-content-max); border-top: 1px solid var(--border-subtle); padding-top: 1rem; margin-top: 2rem; }
+  .legal-downloads a { display: inline-flex; align-items: center; min-height: 44px; color: var(--link); font-size: .8125rem; text-decoration: underline; }
+  .legal-downloads a:hover { color: var(--link-hover); text-decoration-thickness: 2px; }
+</style>

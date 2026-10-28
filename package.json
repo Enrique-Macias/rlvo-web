@@ -9,15 +9,22 @@
   "scripts": {
     "assets": "node scripts/prepare-assets.mjs && node scripts/prepare-brand.mjs",
     "audit:brand": "node scripts/audit-brand.mjs",
+    "verify:legal": "node --experimental-strip-types scripts/verify-legal.ts",
+    "normalize:legal": "node --experimental-strip-types scripts/normalize-legal.ts",
+    "test:legal": "node --experimental-strip-types --test tests/legal-integrity.test.ts tests/legal-contract.test.ts",
+    "audit:legal": "node --experimental-strip-types scripts/audit-legal.ts",
     "predev": "npm run assets",
     "dev": "ASTRO_TELEMETRY_DISABLED=1 astro dev",
     "check": "ASTRO_TELEMETRY_DISABLED=1 astro check",
-    "prebuild": "npm run assets",
-    "build": "ASTRO_TELEMETRY_DISABLED=1 astro build && node scripts/audit-static.mjs && npm run audit:brand",
+    "prebuild": "npm run verify:legal && npm run assets",
+    "build": "ASTRO_TELEMETRY_DISABLED=1 astro build && node scripts/audit-static.mjs && npm run audit:brand && npm run audit:legal",
     "build:preview": "SITE_ENV=preview npm run build",
-    "preview": "ASTRO_TELEMETRY_DISABLED=1 astro preview"
+    "preview": "ASTRO_TELEMETRY_DISABLED=1 astro preview",
+    "compare:legal": "node --experimental-strip-types scripts/compare-legal-archive.ts",
+    "test:legal:http": "node --experimental-strip-types scripts/audit-legal-http.ts"
   },
   "dependencies": {
+    "@astrojs/markdown-satteri": "0.4.2",
     "@astrojs/sitemap": "^3.7.4",
     "@fontsource-variable/fraunces": "^5.3.0",
     "@fontsource-variable/inter": "^5.3.0",

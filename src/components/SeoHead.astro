@@ -1,20 +1,21 @@
 ---
-import { site, pages, canonical, type PagePath } from '../config/site';
-interface Props { page: PagePath }
-const { page } = Astro.props;
-const meta = pages[page];
+import { site, pages, canonical, type PagePath, type PageMetadata } from '../config/site';
+interface Props { page: PagePath; seo?: PageMetadata }
+const { page, seo } = Astro.props;
+const meta = seo ?? pages[page];
+const path = seo?.path ?? page;
 const noindex = !meta.index || import.meta.env.SITE_ENV === 'preview';
 ---
 <title>{meta.title}</title>
 <meta name="description" content={meta.description} />
-<link rel="canonical" href={canonical(page)} />
+<link rel="canonical" href={canonical(path)} />
 <meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow'} />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content={site.brand} />
 <meta property="og:locale" content={site.ogLocale} />
 <meta property="og:title" content={meta.title} />
 <meta property="og:description" content={meta.description} />
-<meta property="og:url" content={canonical(page)} />
+<meta property="og:url" content={canonical(path)} />
 <meta property="og:image" content={canonical(site.seo.image)} />
 <meta property="og:image:alt" content={site.seo.imageAlt} />
 <meta property="og:image:type" content="image/png" />

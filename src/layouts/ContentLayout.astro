@@ -1,10 +1,10 @@
 ---
 import BaseLayout from './BaseLayout.astro';
-import { type PagePath } from '../config/site';
-interface Props { page: PagePath; title: string; intro: string; label?: string; date?: string; toc?: { id: string; label: string }[]; draft?: boolean }
-const { page, title, intro, label = 'Información', date, toc = [], draft = false } = Astro.props;
+import { type PagePath, type PageMetadata } from '../config/site';
+interface Props { page: PagePath; title: string; intro: string; label?: string; date?: string; toc?: { id: string; label: string }[]; draft?: boolean; seo?: PageMetadata }
+const { page, title, intro, label = 'Información', date, toc = [], draft = false, seo } = Astro.props;
 ---
-<BaseLayout page={page}>
+<BaseLayout page={page} seo={seo}>
   <div class="wrap content-page">
     <div class="content-heading"><a class="text-link back-link" href="/"><span aria-hidden="true">←</span> Inicio</a><p class="eyebrow">{label}</p><h1>{title}</h1><p class="intro">{intro}</p>{date && <p class="legal-date">Última actualización: <span>{date}</span></p>}</div>
     {draft && <aside class="draft-banner"><strong>Borrador pendiente de revisión jurídica</strong><p>Este documento refleja decisiones confirmadas del producto, pero todavía contiene puntos jurídicos y operativos pendientes. No es una versión legal definitiva.</p></aside>}
@@ -12,6 +12,7 @@ const { page, title, intro, label = 'Información', date, toc = [], draft = fals
       {toc.length > 0 && <nav class="contents-nav" aria-label="Índice del documento"><p>En esta página</p><ol>{toc.map(item => <li><a href={`#${item.id}`}>{item.label}</a></li>)}</ol></nav>}
       <div class="prose"><slot /></div>
     </div>
+    <slot name="after-document" />
   </div>
 </BaseLayout>
 <style>

@@ -1,0 +1,58 @@
+{
+  "purpose": "migration-regression-only; not a legal release or PL-016 hash",
+  "sourceCommit": "4bf6120",
+  "documents": {
+    "terminos": {
+      "textSha256": "8322b15e2e87e801c53955d7d3cf056f0c89bdc3279ad47e213bc61659ae291e",
+      "links": [
+        "mailto:soporte@rlvo.com.mx",
+        "/eliminar-cuenta",
+        "/privacidad",
+        "mailto:contacto@rlvo.com.mx",
+        "mailto:soporte@rlvo.com.mx",
+        "mailto:privacidad@rlvo.com.mx"
+      ],
+      "sectionIds": [
+        "servicio",
+        "cuenta",
+        "publicaciones",
+        "moderacion",
+        "operaciones",
+        "resenas",
+        "contenido",
+        "eliminacion",
+        "canales",
+        "pendientes"
+      ],
+      "header": {
+        "title": "Términos de uso",
+        "intro": "Borrador de las reglas de uso de RLVO. Su redacción jurídica definitiva requiere revisión antes del lanzamiento.",
+        "date": "[[POR CONFIRMAR: fecha de actualización de los términos]]"
+      }
+    },
+    "privacidad": {
+      "textSha256": "cf8fe447126d97071130e8d814a288035c3ab81e6a21b062c0ed1e63cb5d5d89",
+      "links": [
+        "mailto:privacidad@rlvo.com.mx",
+        "/eliminar-cuenta",
+        "mailto:privacidad@rlvo.com.mx"
+      ],
+      "sectionIds": [
+        "alcance",
+        "responsable",
+        "datos",
+        "usos",
+        "moderacion",
+        "proveedores",
+        "conservacion",
+        "eliminacion",
+        "derechos"
+      ],
+      "header": {
+        "title": "Aviso de privacidad",
+        "intro": "Borrador informativo sobre cómo la aplicación móvil de RLVO trata datos personales.",
+        "date": "[[POR CONFIRMAR: fecha de actualización del aviso de privacidad]]"
+      }
+    }
+  }
+}

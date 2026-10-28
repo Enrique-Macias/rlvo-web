@@ -1,0 +1,2 @@
+# Los bytes canónicos se verifican, nunca se convierten automáticamente al hacer checkout.
+src/content/legal/**/*.md -text

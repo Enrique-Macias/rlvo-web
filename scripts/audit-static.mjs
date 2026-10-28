@@ -20,6 +20,8 @@ for (const [file, html] of pages) {
     openGraph: /property="og:title"/,
   })) if (!pattern.test(html)) fail(`Falta ${name}`);
   if ((html.match(/<h1(?:\s|>)/g) ?? []).length !== 1) fail('Se requiere exactamente un h1');
+  const ids = [...html.matchAll(/\sid="([^"]+)"/g)].map(match => match[1]);
+  if (new Set(ids).size !== ids.length) fail('Identificadores HTML duplicados');
   if (/<form(?:\s|>)/.test(html)) fail('Formulario no autorizado');
   const scripts = html.match(/<script\b[^>]*>/g) ?? [];
   scriptCount += scripts.length;
@@ -66,6 +68,8 @@ for (const [file, html] of pages) {
     const href = match[1];
     if (/^(?:mailto:|https?:)/.test(href)) continue;
     const [pathname, hash] = href.split('#');
+    const asset = pathname.replace(/^\//, '');
+    if (pathname && files.includes(asset) && !asset.endsWith('.html')) continue;
     const dest = !pathname ? file : pathname === '/' ? 'index.html' : pathname.replace(/^\//, '').replace(/\/$/, '') + '.html';
     if (!pages.has(dest)) { fail(`Enlace interno sin destino: ${href}`); continue; }
     if (hash && !pages.get(dest).includes(`id="${hash}"`)) fail(`Anchor inexistente: ${href}`);

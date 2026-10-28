@@ -58,6 +58,8 @@ img { display: block; max-width: 100%; height: auto; }
 .divider { border-top: 1px solid var(--border-subtle); }
 .screen-note { font-size: .75rem; line-height: 1.7; color: var(--text-secondary); }
 .pending { display: block; margin-block: 1rem; padding: .875rem 1rem; background: var(--surface-subtle); color: var(--text-primary); border-left: 3px solid var(--border-strong); overflow-wrap: anywhere; font-size: .875rem; }
+.email-link { display: inline-flex; align-items: center; gap: .75rem; max-width: 100%; padding-block: .75rem; min-height: 44px; font-size: clamp(1rem, 3vw, 1.7rem); font-family: var(--display); text-decoration: underline; text-decoration-thickness: 1px; color: var(--link); overflow-wrap: anywhere; }
+.email-link:hover { color: var(--link-hover); text-decoration-thickness: 2px; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition: none !important; }

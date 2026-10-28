@@ -1,0 +1,7 @@
+---
+import LegalDocument from '../../components/LegalDocument.astro';
+import { getReleaseReferences } from '../../legal/registry';
+export const getStaticPaths = () => getReleaseReferences('terminos').map(({ version }) => ({ params: { version }, props: { version } }));
+const { version } = Astro.props as { version: string };
+---
+<LegalDocument document="terminos" version={version} />

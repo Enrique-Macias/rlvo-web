@@ -1,0 +1,24 @@
+/legal/*
+  X-Robots-Tag: noindex, follow
+  Cache-Control: no-store
+
+/legal/borradores/*.md
+  Content-Type: text/markdown; charset=utf-8
+
+/legal/borradores/*.sha256
+  Content-Type: text/plain; charset=utf-8
+
+/legal/terminos/*.md
+  Content-Type: text/markdown; charset=utf-8
+
+/legal/terminos/*.sha256
+  Content-Type: text/plain; charset=utf-8
+
+/legal/privacidad/*.md
+  Content-Type: text/markdown; charset=utf-8
+
+/legal/privacidad/*.sha256
+  Content-Type: text/plain; charset=utf-8
+
+/legal/manifest.json
+  Content-Type: application/json; charset=utf-8
