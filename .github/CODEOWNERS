@@ -1,0 +1,22 @@
+# Preparación local: no activa revisiones obligatorias ni configura GitHub.
+# El propietario no puede aprobar su propio PR; antes de exigir esta regla se
+# necesita un segundo revisor de confianza con acceso write, aún por definir.
+/.github/ @Enrique-Macias
+/scripts/ @Enrique-Macias
+/scripts/ci/ @Enrique-Macias
+/package.json @Enrique-Macias
+/package-lock.json @Enrique-Macias
+/scripts/check-legal-baseline.mjs @Enrique-Macias
+/scripts/verify-legal.ts @Enrique-Macias
+/tests/ci-*.test.mjs @Enrique-Macias
+/tests/legal-*.test.ts @Enrique-Macias
+/tests/fixtures/legal-migration.json @Enrique-Macias
+/legal/ @Enrique-Macias
+/src/content/legal/ @Enrique-Macias
+/src/legal/ @Enrique-Macias
+/src/config/legal-current.json @Enrique-Macias
+/docs/PL-016-WEB-INTEGRATION-CONTRACT.md @Enrique-Macias
+/docs/LEGAL_FACTS.md @Enrique-Macias
+/src/content/legal.ts @Enrique-Macias
+/src/pages/eliminar-cuenta.astro @Enrique-Macias
+/src/config/site.ts @Enrique-Macias

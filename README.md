@@ -95,6 +95,19 @@ archivada de un release contra la fuente y su digest, sin escribir ni activar.
 Con una preview local iniciada, `npm run test:legal:http --
 http://127.0.0.1:4391` comprueba descargas y 404 reales.
 
+## CI — bloque 4A aprobado localmente
+
+`npm run ci:web` ejecuta instalación desde lock, las pruebas, Astro check,
+ambos builds/auditorías, pruebas HTTP y detección de reescrituras legales.
+Requiere Node 22.21.1, npm 10.9.4 y `LEGAL_BASELINE_REF` como SHA completo
+explícito. `npm run test:ci` comprueba integridad y seguridad de los workflows.
+
+La CI habitual del candidato está separada del control jurídico, que usa la
+base revisada y el checker del baseline sin ejecutar código del PR.
+Los workflows y CODEOWNERS no habilitan protecciones remotas por sí mismos.
+El commit local está autorizado; faltan autorización de push, bootstrap y configuración externa. Ver
+[modelo de confianza y pasos remotos](docs/CI_PHASE_4A.md).
+
 ## Publicación pendiente
 
 `wrangler.jsonc` conserva Workers Static Assets: sirve `dist/`, sin adaptador

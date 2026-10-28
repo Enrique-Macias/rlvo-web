@@ -1,0 +1,43 @@
+name: RLVO Web CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: web-ci-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  web:
+    name: web-quality
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      CI: 'true'
+      ASTRO_TELEMETRY_DISABLED: '1'
+      # Sin valor por defecto: configurar fuera de los PR solo tras autorización.
+      LEGAL_BASELINE_REF: ${{ vars.LEGAL_BASELINE_SHA }}
+    steps:
+      - name: Checkout exact candidate (head, not merge simulation)
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+          submodules: false
+          lfs: false
+      - name: Fixed Node, no shared package cache
+        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        with:
+          node-version: '22.21.1'
+          check-latest: false
+          package-manager-cache: false
+      - name: Verify inputs, install, test, check and build both environments
+        run: node scripts/ci/verify-web.mjs

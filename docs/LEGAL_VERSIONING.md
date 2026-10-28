@@ -90,7 +90,7 @@ Configuración externa necesaria, todavía NO ejecutada:
 5. Avanzar la referencia al commit aprobado tras cada incorporación/publicación, conservando el historial y las referencias de releases. Una referencia perpetuamente anclada al lock vacío no protege adiciones posteriores.
 6. Autorizar despliegues solo de artefactos asociados a estos checks y conservar backups de los canónicos. Aplicar verificaciones periódicas de URLs y bytes servidos después de publicar.
 
-No se añade un workflow que aparente estar protegido: su proveedor, responsables, secretos/permisos y reglas de rama requieren configuración y aprobación externas. El checker y el modo de fallo estricto están preparados y probados localmente.
+Fase 3 dejó el checker y su modo de fallo estricto sin workflows. El bloque 4A prepara ahora workflows y CODEOWNERS locales, sin habilitar servicios, protecciones o variables remotas. El modelo de confianza, los pins, el bootstrap y las limitaciones del repositorio se documentan en `docs/CI_PHASE_4A.md`; requieren revisión y autorización separadas.
 
 ## Verificación y publicación
 

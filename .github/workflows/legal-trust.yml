@@ -1,0 +1,46 @@
+name: RLVO Legal Trust
+
+# Excepción deliberada: nunca ejecuta NI hace checkout del código del PR.
+# Solo blobs Git como datos. No npm, caches, artefactos, secrets ni escritura.
+on:
+  pull_request_target:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review, edited]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: legal-trust-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  integrity:
+    name: legal-integrity
+    if: github.event_name == 'pull_request_target' || github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      CI: 'true'
+      LEGAL_BASELINE_SHA: ${{ vars.LEGAL_BASELINE_SHA }}
+      BASE_SHA: ${{ github.event.pull_request.base.sha || github.sha }}
+      CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+    steps:
+      - name: Checkout only the trusted base
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ github.event.pull_request.base.sha || github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+          submodules: false
+          lfs: false
+      - name: Fixed Node without npm cache
+        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        with:
+          node-version: '22.21.1'
+          check-latest: false
+          package-manager-cache: false
+      - name: Read Git objects and execute only the pinned baseline checker
+        run: node scripts/ci/trusted-legal.mjs
