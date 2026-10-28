@@ -14,7 +14,7 @@ es-MX
 
 ## Dominio canónico
 
-https://rlvo.com.mx
+https://www.rlvo.com.mx
 
 ---
 
@@ -38,8 +38,14 @@ datos pendientes. `/404` también lleva `noindex, follow`.
 
 Solo las rutas indexables se incluyen en el sitemap. Los canonical usan el
 dominio principal y rutas sin slash final, salvo `/`. Open Graph incluye tipo,
-marca, locale, título, descripción y URL. La imagen queda pendiente en
-`site.seo.image`; no se referencia un archivo inexistente.
+marca, locale, título, descripción y URL. La imagen de marca se genera en
+`/og/rlvo-paleta-06.png` a 1200 × 630 desde el logo oficial y el verde principal.
+Su URL, descripción y dimensiones viven en `site.seo`. `theme-color` coincide
+con la superficie principal; la auditoría de branding comprueba esa relación.
+
+La aprobación de `www` como host canónico no modifica redirects. La consulta
+HTTP del 27 de octubre de 2026 devolvió 200 en ambos hosts; su conciliación
+en infraestructura requiere verificación y autorización independientes.
 
 `SITE_ENV=preview` fuerza `noindex` en todas las páginas y robots bloqueado.
 El build normal restaura la política de producción. Cuando los documentos

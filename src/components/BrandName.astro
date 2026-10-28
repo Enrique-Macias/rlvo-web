@@ -1,8 +1,10 @@
 ---
 import { site } from '../config/site';
+interface Props { inverse?: boolean }
+const { inverse = false } = Astro.props;
 ---
-<a class="wordmark" href="/" aria-label={`${site.brand}, inicio`}>{site.brand}<span aria-hidden="true">.</span></a>
+<a class="brand-logo" href="/" aria-label={`${site.brand}, inicio`}><img src={inverse ? site.brandAssets.logoInverse : site.brandAssets.logo} width="770" height="290" alt="" /></a>
 <style>
-  .wordmark { font-family: var(--display); font-size: 2.1rem; font-weight: 600; letter-spacing: -.08em; text-decoration: none; display: inline-flex; align-items: center; min-height: 44px; }
-  .wordmark span { color: var(--brick); }
+  .brand-logo { display: inline-flex; align-items: center; width: 8.75rem; max-width: 100%; min-height: 44px; flex-shrink: 0; text-decoration: none; }
+  img { width: 100%; height: auto; }
 </style>

@@ -21,7 +21,7 @@ coherente con las rutas canónicas de Astro. El dominio raíz conserva `/`.
 
 La configuración es local. Esta implementación no crea un proyecto de
 Cloudflare, no publica versiones ni modifica DNS. La creación del recurso,
-conexión del dominio, redirección de `www` y despliegue requieren una
+conexión del dominio, redirecciones entre hosts y despliegue requieren una
 instrucción explícita posterior.
 
 Referencia: https://developers.cloudflare.com/workers/framework-guides/web-apps/astro/
@@ -30,20 +30,14 @@ Referencia: https://developers.cloudflare.com/workers/framework-guides/web-apps/
 
 ## Dominio
 
-Producción:
+Canonical público aprobado: https://www.rlvo.com.mx.
 
-https://rlvo.com.mx
-
-También debe contemplarse:
-
-https://www.rlvo.com.mx
-
-La estrategia exacta de redirect/canonical se decidirá al configurar
-producción.
-
-Canonical principal:
-
-https://rlvo.com.mx
+Se conserva el mecanismo local de Workers Static Assets; no se migra a Pages.
+La consulta HTTP del 27 de octubre de 2026 devolvió 200 tanto para `www` como
+para `rlvo.com.mx`, sin redirección en esas respuestas. No se inspeccionó la
+cuenta remota de Cloudflare; los headers no identifican por sí solos Pages
+frente a Workers. No modificar redirects sin verificar la configuración real
+y obtener autorización específica.
 
 ---
 
@@ -141,6 +135,12 @@ La arquitectura de esa funcionalidad debe aprobarse por separado.
 ## Observability / analytics
 
 No instalar analytics inicialmente.
+
+Discrepancia detectada en Fase 2: la implementación actual ya incluye
+Cloudflare Web Analytics y la auditoría exige ese beacon. Por instrucción
+expresa se conserva sin cambios. Esta política, LEGAL_FACTS.md y el aviso
+actual deben conciliarse antes de PROD; esta fase no modifica texto jurídico.
+Ver `docs/BRANDING_PHASE_2.md`.
 
 Cloudflare Web Analytics, PostHog u otra herramienta solo se añadirá mediante
 decisión explícita.

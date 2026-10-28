@@ -18,17 +18,15 @@ Los tokens de este documento no deben modificarse sin aprobación.
 
 ---
 
-## Colors
+## Colors — Paleta 06 aprobada
 
 ```css
---ink: #221F1C;
---ink-soft: #6B6660;
---paper: #F3F0EA;
---card: #FFFFFF;
---brick: #C1440E;
---forest: #2F6B4F;
---gold: #D9A441;
---slate: #5B6B78;
+--brand-primary: #183D39;
+--brand-deep: #23635C;
+--brand-accent: #78CDB5;
+--brand-tint: #DDF5ED;
+--brand-mist: #F5FAF8;
+--brand-white: #FFFFFF;
 ```
 
 Se pueden crear tintes derivados mediante color-mix() cuando sea apropiado.
@@ -37,21 +35,23 @@ No introducir nuevos colores principales sin aprobación.
 ---
 
 ## Roles
-ink
-Texto principal y superficies oscuras.
-ink-soft
-Texto secundario.
-paper
-Fondo principal.
-card
-Superficies elevadas cuando realmente sean necesarias.
-brick
-Marca, acciones principales y acentos importantes.
-forest
-Confianza, verificación y estados positivos cuando corresponda.
-gold / slate
-Acentos secundarios y decorativos.
-No competir visualmente con brick.
+
+Los componentes consumen los roles de `src/styles/tokens.css`, no colores
+literales ni los nombres de la identidad anterior.
+
+- `text-primary`: verde principal; `text-secondary`: verde profundo.
+- `surface-page`: F5FAF8; `surface-card`: blanco; `surface-subtle`: DDF5ED.
+- `surface-inverse`: verde principal; texto blanco o menta claro.
+- `surface-accent`: menta; texto verde principal cuando exista texto encima.
+- `action-primary`: verde principal; hover verde profundo, ambos con blanco.
+- `link`: verde profundo; hover verde principal y feedback por subrayado.
+- `border-subtle`: separadores; `border-strong`: límites de mayor jerarquía.
+- `focus-ring`: verde sobre claro; menta en superficies inversas.
+
+La menta no se utiliza como texto sobre fondos claros. El verde profundo
+sobre menta tampoco alcanza 4.5:1; esa combinación usa verde principal.
+F5FAF8 y DDF5ED son superficies distintas. Los SVG conservan sus colores
+originales aunque su nombre use el término «menta-claro».
 
 ---
 ## Typography
@@ -59,7 +59,6 @@ Display:
 Fraunces
 Uso:
 - headlines
-- wordmark cuando corresponda
 - elementos editoriales destacados
 Body/UI:
 Inter
@@ -67,6 +66,9 @@ Pesos preferidos:
 400 / 500 / 600
 Evitar exceso de pesos.
 Fuentes autoalojadas.
+
+La marca se presenta mediante los SVG oficiales, sin reconstruir su wordmark
+con Fraunces. Inter y Fraunces mantienen los WOFF2 locales existentes.
 
 ---
 
@@ -142,10 +144,9 @@ Respetar prefers-reduced-motion.
 
 ## Accessibility
 WCAG AA como objetivo mínimo.
-Atención especial a:
---brick sobre --paper.
-No asumir que cualquier combinación de tokens cumple contraste.
-Verificar texto pequeño antes de usar brick como foreground.
+No asumir que cualquier combinación de tokens cumple contraste. El build
+comprueba los pares de texto aprobados y el foco sobre superficies claras.
+La revisión en navegador verifica los usos reales, estados y responsive.
 
 ---
 

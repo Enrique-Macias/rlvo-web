@@ -12,7 +12,7 @@ const { page } = Astro.props;
 ---
 <!doctype html>
 <html lang={site.locale}>
-  <head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><SeoHead page={page} /><link rel="icon" href="/favicon.svg" type="image/svg+xml" /><link rel="preload" href={interFont} as="font" type="font/woff2" crossorigin /><link rel="preload" href={frauncesFont} as="font" type="font/woff2" crossorigin /></head>
+  <head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><SeoHead page={page} /><link rel="icon" href={site.brandAssets.favicon} type="image/svg+xml" /><link rel="preload" href={interFont} as="font" type="font/woff2" crossorigin /><link rel="preload" href={frauncesFont} as="font" type="font/woff2" crossorigin /></head>
   <body id="inicio">
     <a class="skip-link" href="#contenido">Saltar al contenido</a>
     <SiteHeader />

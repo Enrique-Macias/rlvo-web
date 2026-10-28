@@ -21,6 +21,19 @@ No hardcodear el nombre en componentes si puede provenir de
 
 rlvo.com.mx
 
+URL pública canónica aprobada: https://www.rlvo.com.mx.
+Esto no cambia los dominios de correo ni autoriza modificar redirects.
+
+## Identidad visual oficial
+
+Paleta 06: verde principal #183D39, verde profundo #23635C, menta #78CDB5,
+menta claro #DDF5ED, fondo #F5FAF8 y blanco #FFFFFF.
+
+El kit de 18 SVG de `brand-reference/` es la fuente de assets aprobados.
+`public/brand/` contiene copias exactas. No redibujar, recolorear, filtrar,
+recortar ni modificar geometría, proporciones o espaciado. El kit conserva
+la variante A del logotipo. Ver `docs/BRANDING_PHASE_2.md`.
+
 ---
 
 ## Personalidad

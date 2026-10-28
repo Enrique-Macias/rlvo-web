@@ -10,6 +10,6 @@ const email = kind === 'contact'
 ---
 <a class="email-link" href={`mailto:${email}`}>{email}<span aria-hidden="true">↗</span></a>
 <style>
-  .email-link { display: inline-flex; align-items: center; gap: 1rem; padding-block: .75rem; min-height: 44px; font-size: clamp(1rem, 3vw, 1.7rem); font-family: var(--display); text-decoration: none; border-bottom: 1px solid var(--brick); color: var(--brick); overflow-wrap: anywhere; }
-  .email-link:hover { color: var(--ink); }
+  .email-link { display: inline-flex; align-items: center; gap: .75rem; max-width: 100%; padding-block: .75rem; min-height: 44px; font-size: clamp(1rem, 3vw, 1.7rem); font-family: var(--display); text-decoration: underline; text-decoration-thickness: 1px; color: var(--link); overflow-wrap: anywhere; }
+  .email-link:hover { color: var(--link-hover); text-decoration-thickness: 2px; }
 </style>

@@ -15,5 +15,9 @@ const noindex = !meta.index || import.meta.env.SITE_ENV === 'preview';
 <meta property="og:title" content={meta.title} />
 <meta property="og:description" content={meta.description} />
 <meta property="og:url" content={canonical(page)} />
-{site.seo.image && <><meta property="og:image" content={canonical(site.seo.image)} /><meta property="og:image:alt" content={site.seo.imageAlt ?? site.brand} /></>}
-<meta name="theme-color" content="#F3F0EA" />
+<meta property="og:image" content={canonical(site.seo.image)} />
+<meta property="og:image:alt" content={site.seo.imageAlt} />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content={String(site.seo.imageWidth)} />
+<meta property="og:image:height" content={String(site.seo.imageHeight)} />
+<meta name="theme-color" content={site.seo.themeColor} />

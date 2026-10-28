@@ -7,12 +7,13 @@
     "node": ">=22.12.0"
   },
   "scripts": {
-    "assets": "node scripts/prepare-assets.mjs",
+    "assets": "node scripts/prepare-assets.mjs && node scripts/prepare-brand.mjs",
+    "audit:brand": "node scripts/audit-brand.mjs",
     "predev": "npm run assets",
     "dev": "ASTRO_TELEMETRY_DISABLED=1 astro dev",
     "check": "ASTRO_TELEMETRY_DISABLED=1 astro check",
     "prebuild": "npm run assets",
-    "build": "ASTRO_TELEMETRY_DISABLED=1 astro build && node scripts/audit-static.mjs",
+    "build": "ASTRO_TELEMETRY_DISABLED=1 astro build && node scripts/audit-static.mjs && npm run audit:brand",
     "build:preview": "SITE_ENV=preview npm run build",
     "preview": "ASTRO_TELEMETRY_DISABLED=1 astro preview"
   },

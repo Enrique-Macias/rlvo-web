@@ -1,6 +1,6 @@
 const brand = 'RLVO';
 const domain = 'rlvo.com.mx';
-const url = `https://${domain}`;
+const url = `https://www.${domain}`;
 
 export const site = {
   brand,
@@ -9,6 +9,11 @@ export const site = {
   url,
   locale: 'es-MX',
   ogLocale: 'es_MX',
+  brandAssets: {
+    logo: '/brand/07_logo_horizontal_verde_transparente.svg',
+    logoInverse: '/brand/09_logo_horizontal_blanco_transparente.svg',
+    favicon: '/favicon.svg',
+  },
   contactEmail: `contacto@${domain}`,
   supportEmail: `soporte@${domain}`,
   privacyEmail: `privacidad@${domain}`,
@@ -28,8 +33,11 @@ export const site = {
   seo: {
     title: `${brand} — Compra y vende entre estudiantes`,
     description: 'Un marketplace móvil para comprar y vender entre estudiantes de tu comunidad universitaria, con verificación por correo universitario. Próximamente.',
-    image: null as string | null,
-    imageAlt: null as string | null,
+    image: '/og/rlvo-paleta-06.png',
+    imageAlt: `Logotipo oficial de ${brand} sobre fondo verde.`,
+    imageWidth: 1200,
+    imageHeight: 630,
+    themeColor: '#F5FAF8',
   },
   navigation: [
     { label: 'La app', href: '/#la-app' },

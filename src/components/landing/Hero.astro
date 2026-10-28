@@ -23,32 +23,31 @@ import ProductScreen from '../ProductScreen.astro';
 <style>
   .hero { display: grid; grid-template-columns: 1.08fr 1fr; align-items: center; min-height: 730px; gap: 2rem; padding-block: 4rem; }
   .hero-copy { position: relative; z-index: 2; }
-  .hero .eyebrow { color: var(--brick); margin-bottom: 1.75rem; }
+  .hero .eyebrow { color: var(--text-secondary); margin-bottom: 1.75rem; }
   h1 { font-size: clamp(3.5rem, 6.5vw, 5.6rem); line-height: .99; }
-  h1 em { color: var(--brick); font-style: normal; }
-  .hero-description { max-width: 390px; margin-top: 1.75rem; color: var(--ink-soft); font-size: .9375rem; line-height: 1.8; }
+  h1 em { color: var(--text-secondary); font-style: normal; }
+  .hero-description { max-width: 390px; margin-top: 1.75rem; color: var(--text-secondary); font-size: .9375rem; line-height: 1.8; }
   .hero-actions { display: flex; align-items: center; gap: 1.5rem; margin-top: 1.75rem; }
-  .verification { display: flex; align-items: center; gap: .5rem; font-size: .6875rem; margin-top: 1.75rem; color: var(--forest); }
+  .verification { display: flex; align-items: center; gap: .5rem; font-size: .75rem; margin-top: 1.75rem; color: var(--text-secondary); }
   .hero-visual { position: relative; height: 595px; min-width: 0; }
-  .visual-field { position: absolute; inset: 15px 0 35px 4%; background: color-mix(in srgb, var(--brick) 9%, var(--paper)); border-radius: 160px 160px 16px 16px; overflow: hidden; }
-  .orbit { width: 540px; height: 540px; border: 1px solid color-mix(in srgb, var(--brick) 28%, transparent); border-radius: 50%; position: absolute; top: 70px; left: -25px; }
-  .orbit::after { content: ''; position: absolute; inset: 45px; border: inherit; border-radius: inherit; }
-  .field-label { position: absolute; left: 23px; top: 285px; font-size: .6rem; letter-spacing: .13em; line-height: 1.7; color: var(--ink); transform: rotate(-90deg); transform-origin: left top; }
-  .field-arrow { position: absolute; right: 20px; top: 30px; font: 500 6rem/1 var(--display); color: var(--brick); }
+  .visual-field { position: absolute; inset: 15px 0 35px 4%; background: var(--surface-subtle); border-radius: 160px 160px 16px 16px; overflow: hidden; }
+  .orbit { width: 540px; height: 540px; border: 1px solid var(--border-subtle); border-radius: 50%; position: absolute; top: 70px; left: -25px; }
+  .field-label { position: absolute; left: 23px; top: 285px; font-size: .6875rem; letter-spacing: .13em; line-height: 1.7; color: var(--text-primary); transform: rotate(-90deg); transform-origin: left top; }
+  .field-arrow { position: absolute; right: 20px; top: 30px; font: 500 6rem/1 var(--display); color: var(--text-secondary); }
   .main-phone { position: absolute; width: 265px; top: 0; left: 15%; transform: rotate(-5deg); z-index: 2; }
   .secondary-phone { position: absolute; width: 200px; right: 0; top: 110px; transform: rotate(8deg); }
-  .visual-caption { position: absolute; z-index: 3; bottom: 43px; right: -8px; background: var(--paper); border: 1px solid var(--line); padding: .9rem 1.25rem; transform: rotate(3deg); font: 500 1.3rem/1.25 var(--display); box-shadow: 0 10px 20px -15px var(--ink); }
-  .visual-caption span { color: var(--brick); }
+  .visual-caption { position: absolute; z-index: 3; bottom: 43px; right: -8px; background: var(--surface-card); border: 1px solid var(--border-subtle); padding: .9rem 1.25rem; transform: rotate(3deg); font: 500 1.3rem/1.25 var(--display); box-shadow: var(--shadow-soft); }
+  .visual-caption span { color: var(--text-secondary); }
   figcaption { position: absolute; bottom: 0; right: 0; }
-  .intro-strip { display: flex; gap: 2rem; align-items: center; padding-block: 1.5rem; border-block: 1px solid var(--line); font-size: .625rem; font-weight: 600; letter-spacing: .14em; }
-  .strip-mark { font-size: 1.25rem; color: var(--brick); }
-  .strip-end { margin-left: auto; color: var(--ink-soft); font-size: .6875rem; font-weight: 400; letter-spacing: 0; }
+  .intro-strip { display: flex; gap: 2rem; align-items: center; padding-block: 1.5rem; border-block: 1px solid var(--border-subtle); font-size: .75rem; font-weight: 600; letter-spacing: .12em; }
+  .strip-mark { font-size: 1.25rem; color: var(--text-secondary); }
+  .strip-end { margin-left: auto; color: var(--text-secondary); font-size: .75rem; font-weight: 400; letter-spacing: 0; }
   @media (min-width: 1100px) { .hero { gap: 3rem; } .main-phone { width: 275px; } .secondary-phone { width: 210px; right: 5px; } }
   @media (max-width: 900px) and (min-width: 768px) { .hero { gap: 1rem; } .main-phone { left: 5%; width: 225px; top: 30px; } .secondary-phone { width: 160px; right: 0; top: 160px; } .hero-visual { height: 560px; } .visual-caption { font-size: 1.1rem; } .hero-actions { gap: .75rem; flex-wrap: wrap; } }
   @media (max-width: 767px) {
     .hero { grid-template-columns: 1fr; padding-block: 2.75rem 1.5rem; gap: 2.5rem; }
     h1 { font-size: clamp(2.9rem, 12vw, 5.5rem); }
-    .hero .eyebrow { font-size: .6rem; margin-bottom: 1.4rem; }
+    .hero .eyebrow { font-size: .6875rem; margin-bottom: 1.4rem; }
     .hero-description { font-size: .875rem; max-width: 430px; }
     .hero-actions { gap: 1rem; }
     .hero-actions :global(.pill-link) { gap: 1rem; padding-inline: 1.2rem; }
@@ -58,7 +57,7 @@ import ProductScreen from '../ProductScreen.astro';
     .secondary-phone { display: none; }
     .visual-caption { bottom: 36px; right: -6px; font-size: 1.2rem; }
     .field-arrow { top: 0; right: 5px; font-size: 4rem; }
-    .intro-strip { justify-content: space-between; gap: .5rem; font-size: .6rem; }
+    .intro-strip { justify-content: space-between; gap: .5rem; font-size: .6875rem; }
     .strip-end { display: none; }
   }
 </style>
