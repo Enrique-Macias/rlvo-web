@@ -9,10 +9,10 @@ import LaunchStatus from './LaunchStatus.astro';
   <div class="header-status"><LaunchStatus /></div>
 </header>
 <style>
-  .site-header { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; min-height: 100px; border-bottom: 1px solid var(--border-subtle); }
+  .site-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1.5rem; min-height: 100px; border-bottom: 1px solid var(--border-subtle); }
   .brand-lockup { display: flex; align-items: center; gap: 1rem; }
   .brand-context { color: var(--text-secondary); font-size: .6875rem; line-height: 1.5; border-left: 1px solid var(--border-subtle); padding-left: 1rem; }
-  nav { display: flex; gap: 2rem; }
+  nav { display: flex; flex-wrap: wrap; gap: .5rem 2rem; max-width: 100%; }
   nav a { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; min-width: 44px; font-size: .8125rem; text-decoration: none; }
   nav a:hover { color: var(--link); text-decoration: underline; }
   @media (max-width: 767px) {

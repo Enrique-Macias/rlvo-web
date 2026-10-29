@@ -14,13 +14,13 @@ const steps = [
 </section>
 <style>
   .how-section { background: var(--surface-inverse); color: var(--text-inverse); padding-block: 5rem; --focus-ring: var(--brand-accent); --focus-halo: var(--surface-inverse); }
-  .how-layout { display: grid; grid-template-columns: 1fr 1.1fr; gap: 5rem; }
+  .how-layout { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); gap: 5rem; }
   .eyebrow { color: var(--text-inverse-muted); margin-bottom: 2rem; }
   h2 em { color: var(--text-accent-inverse); }
   .how-heading > p:not(.eyebrow) { font-size: .875rem; margin-top: 1.75rem; color: var(--text-inverse-muted); }
   .journey-arrow { font: 400 8rem/.9 var(--display); color: var(--text-accent-inverse); display: block; margin-top: 2rem; }
   ol { list-style: none; margin: 0; padding: 0; }
-  li { display: grid; grid-template-columns: 2.5rem 1fr; gap: 1.5rem; padding-block: 1.6rem; border-top: 1px solid var(--border-inverse); }
+  li { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr); gap: 1.5rem; padding-block: 1.6rem; border-top: 1px solid var(--border-inverse); }
   li:last-child { border-bottom: 1px solid var(--border-inverse); }
   .step-number { font: 400 1.1rem/1.4 var(--display); color: var(--text-accent-inverse); }
   h3 { font-size: 1rem; font-weight: 500; margin-bottom: .75rem; }

@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "type": "module",
   "engines": {
-    "node": ">=22.12.0"
+    "node": ">=22.19.0"
   },
   "scripts": {
     "assets": "node scripts/prepare-assets.mjs && node scripts/prepare-brand.mjs",
@@ -23,7 +23,12 @@
     "compare:legal": "node --experimental-strip-types scripts/compare-legal-archive.ts",
     "test:legal:http": "node --experimental-strip-types scripts/audit-legal-http.ts",
     "test:ci": "node --test tests/ci-*.test.mjs",
-    "ci:web": "node scripts/ci/verify-web.mjs"
+    "ci:web": "node scripts/ci/verify-web.mjs",
+    "qa:browsers": "node scripts/qa/browsers.mjs",
+    "qa:smoke": "node scripts/qa/run.mjs smoke",
+    "qa:full": "node scripts/qa/run.mjs full",
+    "qa:lighthouse": "node scripts/qa/run.mjs lighthouse",
+    "qa:report": "node scripts/qa/report.mjs"
   },
   "dependencies": {
     "@astrojs/markdown-satteri": "0.4.2",
@@ -36,6 +41,9 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
+    "@axe-core/playwright": "4.14.0",
+    "@playwright/test": "1.64.1",
+    "lighthouse": "13.6.0",
     "sharp": "^0.35.5",
     "typescript": "^6.0.3",
     "yaml": "2.9.1"

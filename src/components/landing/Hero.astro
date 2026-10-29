@@ -21,7 +21,7 @@ import ProductScreen from '../ProductScreen.astro';
 </section>
 <div class="intro-strip wrap"><span>DESCUBRE</span><span class="strip-mark" aria-hidden="true">↗</span><span>PUBLICA</span><span class="strip-mark" aria-hidden="true">↗</span><span>CONECTA</span><span class="strip-end">Entre estudiantes, todo empieza con una conexión.</span></div>
 <style>
-  .hero { display: grid; grid-template-columns: 1.08fr 1fr; align-items: center; min-height: 730px; gap: 2rem; padding-block: 4rem; }
+  .hero { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); align-items: center; min-height: 730px; gap: 2rem; padding-block: 4rem; }
   .hero-copy { position: relative; z-index: 2; }
   .hero .eyebrow { color: var(--text-secondary); margin-bottom: 1.75rem; }
   h1 { font-size: clamp(3.5rem, 6.5vw, 5.6rem); line-height: .99; }
@@ -39,7 +39,7 @@ import ProductScreen from '../ProductScreen.astro';
   .visual-caption { position: absolute; z-index: 3; bottom: 43px; right: -8px; background: var(--surface-card); border: 1px solid var(--border-subtle); padding: .9rem 1.25rem; transform: rotate(3deg); font: 500 1.3rem/1.25 var(--display); box-shadow: var(--shadow-soft); }
   .visual-caption span { color: var(--text-secondary); }
   figcaption { position: absolute; bottom: 0; right: 0; }
-  .intro-strip { display: flex; gap: 2rem; align-items: center; padding-block: 1.5rem; border-block: 1px solid var(--border-subtle); font-size: .75rem; font-weight: 600; letter-spacing: .12em; }
+  .intro-strip { display: flex; flex-wrap: wrap; gap: 2rem; align-items: center; padding-block: 1.5rem; border-block: 1px solid var(--border-subtle); font-size: .75rem; font-weight: 600; letter-spacing: .12em; }
   .strip-mark { font-size: 1.25rem; color: var(--text-secondary); }
   .strip-end { margin-left: auto; color: var(--text-secondary); font-size: .75rem; font-weight: 400; letter-spacing: 0; }
   @media (min-width: 1100px) { .hero { gap: 3rem; } .main-phone { width: 275px; } .secondary-phone { width: 210px; right: 5px; } }

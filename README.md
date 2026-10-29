@@ -108,6 +108,15 @@ Los workflows y CODEOWNERS no habilitan protecciones remotas por sí mismos.
 El commit local está autorizado; faltan autorización de push, bootstrap y configuración externa. Ver
 [modelo de confianza y pasos remotos](docs/CI_PHASE_4A.md).
 
+## Calidad local — bloque 4B
+
+`npm run qa:browsers` instala los tres motores de prueba en `qa/` (ignorado).
+`npm run qa:smoke` ejecuta Chromium rápido; `npm run qa:full` ejecuta las 84
+combinaciones más escenarios de accesibilidad. `npm run qa:lighthouse` mide
+tres veces cada página indexable sobre producción local y conserva medianas.
+El full y Lighthouse se invocan explícitamente, separados del ciclo de desarrollo.
+Ver [cobertura, condiciones y límites WCAG](docs/QA_PHASE_4B.md).
+
 ## Publicación pendiente
 
 `wrangler.jsonc` conserva Workers Static Assets: sirve `dist/`, sin adaptador

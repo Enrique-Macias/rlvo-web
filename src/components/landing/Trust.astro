@@ -6,7 +6,7 @@ import ProductScreen from '../ProductScreen.astro';
   <div class="trust-copy"><p class="eyebrow">03 / Comunidad</p><h2 id="trust-title" class="section-title">Más contexto.<br /><em>Más comunidad.</em></h2><p class="trust-intro">Conectar también es saber un poco más de la persona al otro lado.</p><dl><div><dt>Correo universitario</dt><dd>La verificación vincula la cuenta con un correo institucional admitido.</dd></div><div><dt>Reseñas y calificaciones</dt><dd>Una referencia adicional al conocer a otros usuarios.</dd></div><div><dt>Reportes y moderación</dt><dd>Herramientas para reportar contenido y revisar publicaciones.</dd></div></dl><p class="note">La verificación y estas herramientas no garantizan la identidad, la conducta de una persona ni una transacción.</p></div>
 </section>
 <style>
-  .trust { display: grid; grid-template-columns: 1fr 1.05fr; gap: 5rem; align-items: center; padding-block: 6rem; }
+  .trust { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); gap: 5rem; align-items: center; padding-block: 6rem; }
   .trust-visual { position: relative; padding: 35px 20px 0; }
   .trust-background { position: absolute; inset: 0 0 75px; border-radius: 50% 50% 16px 16px; background: var(--surface-subtle); }
   figure { position: relative; max-width: 350px; margin-inline: auto; }

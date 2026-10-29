@@ -18,10 +18,10 @@ import { site } from '../../config/site';
 </section>
 <style>
   .product-story { padding-block: 6rem; }
-  .story-heading { display: grid; grid-template-columns: 1.3fr 1fr; gap: 1.5rem 4rem; margin-bottom: 3rem; }
+  .story-heading { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 1.5rem 4rem; margin-bottom: 3rem; }
   .story-heading .eyebrow { grid-column: 1 / -1; }
   .story-heading > p:last-child { max-width: 360px; align-self: end; padding-bottom: .5rem; font-size: .875rem; color: var(--text-secondary); line-height: 1.8; }
-  .story-grid { display: grid; grid-template-columns: 1.12fr 1fr; gap: 3rem; }
+  .story-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); gap: 3rem; }
   .publish-story { padding-top: 5rem; }
   .story-art { position: relative; height: 510px; border-radius: 16px; overflow: hidden; }
   .discovery-art { background: var(--surface-subtle); }

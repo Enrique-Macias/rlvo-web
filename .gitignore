@@ -7,7 +7,7 @@ public/media/
 .env
 .env.*
 !.env.example
-qa/
+/qa/
 
 # Wrangler
 .dev.vars

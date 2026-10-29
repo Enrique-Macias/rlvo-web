@@ -33,7 +33,7 @@ a, summary { touch-action: manipulation; }
 a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 5px; border-radius: 4px; box-shadow: 0 0 0 2px var(--focus-halo); }
 b, strong { font-weight: 600; }
 h1, h2, h3, p, figure { margin: 0; }
-h1, h2, h3 { line-height: 1.1; text-wrap: balance; }
+h1, h2, h3 { line-height: 1.1; text-wrap: balance; overflow-wrap: anywhere; }
 h1, h2 { font-family: var(--display); font-weight: 500; letter-spacing: -.055em; }
 p { text-wrap: pretty; }
 img { display: block; max-width: 100%; height: auto; }
