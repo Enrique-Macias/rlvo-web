@@ -18,12 +18,12 @@ concurrency:
 jobs:
   integrity:
     name: legal-integrity
-    if: github.event_name == 'pull_request_target' || github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     env:
       CI: 'true'
       LEGAL_BASELINE_SHA: ${{ vars.LEGAL_BASELINE_SHA }}
+      CI_CONTROL_CHANGE_AUTHORIZATION: ${{ vars.CI_CONTROL_CHANGE_AUTHORIZATION }}
       BASE_SHA: ${{ github.event.pull_request.base.sha || github.sha }}
       CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
       PR_NUMBER: ${{ github.event.pull_request.number }}
@@ -42,5 +42,5 @@ jobs:
           node-version: '22.21.1'
           check-latest: false
           package-manager-cache: false
-      - name: Read Git objects and execute only the pinned baseline checker
+      - name: Verify CI controls from the base and legal integrity from the pinned baseline
         run: node scripts/ci/trusted-legal.mjs

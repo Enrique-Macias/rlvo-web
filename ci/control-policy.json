@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "repository": "Enrique-Macias/rlvo-web",
+  "criticalDirectories": [".github", "scripts/ci", "src/legal"],
+  "criticalFiles": [
+    "ci/control-policy.json",
+    "scripts/check-legal-baseline.mjs",
+    "scripts/verify-legal.ts",
+    "scripts/normalize-legal.ts",
+    "scripts/audit-static.mjs",
+    "scripts/audit-brand.mjs",
+    "scripts/audit-legal.ts",
+    "scripts/audit-legal-http.ts",
+    "scripts/prepare-assets.mjs",
+    "scripts/prepare-brand.mjs",
+    "tests/fixtures/legal-migration.json",
+    "package.json",
+    "package-lock.json",
+    "astro.config.mjs",
+    "tsconfig.json",
+    ".gitattributes",
+    ".npmrc",
+    ".gitmodules",
+    ".node-version",
+    ".nvmrc",
+    "docs/CI_CONTROL_INTEGRITY.md"
+  ],
+  "criticalFilePrefixes": ["tests/ci-", "tests/legal-"],
+  "nonAuthorizableDirectories": ["legal", "src/content/legal"],
+  "nonAuthorizableFiles": [
+    "src/config/legal-current.json",
+    "docs/PL-016-WEB-INTEGRATION-CONTRACT.md",
+    "docs/LEGAL_FACTS.md",
+    "src/content/legal.ts",
+    "src/pages/eliminar-cuenta.astro",
+    "src/config/site.ts"
+  ]
+}
