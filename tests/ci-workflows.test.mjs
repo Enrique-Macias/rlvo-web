@@ -16,6 +16,16 @@ function secure(workflow, trusted) {
   assert.equal(Boolean(workflow.on.pull_request_target), trusted);
   const jobs = Object.values(workflow.jobs); assert.equal(jobs.length, 1);
   const job = jobs[0]; assert.equal(job['runs-on'], 'ubuntu-24.04');
+  assert.equal(job.if, undefined); assert.equal(job['continue-on-error'], undefined);
+  assert.equal(job.permissions, undefined);
+  assert.equal(job.name, trusted ? 'legal-integrity' : 'web-quality');
+  if (trusted) assert.deepEqual(job.env, {
+    CI: 'true', LEGAL_BASELINE_SHA: '${{ vars.LEGAL_BASELINE_SHA }}',
+    CI_CONTROL_CHANGE_AUTHORIZATION: '${{ vars.CI_CONTROL_CHANGE_AUTHORIZATION }}',
+    BASE_SHA: '${{ github.event.pull_request.base.sha || github.sha }}',
+    CANDIDATE_SHA: '${{ github.event.pull_request.head.sha || github.sha }}',
+    PR_NUMBER: '${{ github.event.pull_request.number }}',
+  });
   assert(job['timeout-minutes'] > 0 && job['timeout-minutes'] <= 20);
   assert.equal(job.steps.length, 3);
   const [checkoutStep, setupStep, runStep] = job.steps;
@@ -26,6 +36,7 @@ function secure(workflow, trusted) {
   });
   assert.deepEqual(setupStep.with, { 'node-version': '22.21.1', 'check-latest': false, 'package-manager-cache': false });
   assert.equal(runStep.run, trusted ? 'node scripts/ci/trusted-legal.mjs' : 'node scripts/ci/verify-web.mjs');
+  assert(job.steps.every(step => step.if === undefined && step['continue-on-error'] === undefined && step.env === undefined));
   assert(!job.environment && !job.services && !job.container);
 }
 test('workflows válidos YAML, acciones con SHA documentado, sin privilegios, caches ni despliegues', () => {
@@ -35,7 +46,8 @@ test('control de confianza usa la base y pin externo; no instala ni ejecuta el c
   const workflow = load('legal-trust'); secure(workflow, true);
   assert.equal(workflow.jobs.integrity.env.LEGAL_BASELINE_SHA, '${{ vars.LEGAL_BASELINE_SHA }}');
   assert.deepEqual(workflow.on.pull_request_target.branches, ['main']);
-  assert.equal(workflow.jobs.integrity.if, "github.event_name == 'pull_request_target' || github.ref == 'refs/heads/main'");
+  assert.equal(workflow.jobs.integrity.env.CI_CONTROL_CHANGE_AUTHORIZATION, '${{ vars.CI_CONTROL_CHANGE_AUTHORIZATION }}');
+  assert.equal(workflow.jobs.integrity.if, undefined);
 });
 for (const [name, mutate] of [
   ['permisos write', workflow => { workflow.permissions.contents = 'write'; }],
@@ -45,6 +57,16 @@ for (const [name, mutate] of [
   ['restauración de cache', workflow => { workflow.jobs.integrity.steps[1].with['package-manager-cache'] = true; }],
   ['ejecución npm en contexto target', workflow => { workflow.jobs.integrity.steps[2].run = 'npm ci'; }],
   ['secretos de deploy', workflow => { workflow.jobs.integrity.env.TOKEN = '${{ secrets.CLOUDFLARE_API_TOKEN }}'; }],
+  ['job skipped', workflow => { workflow.jobs.integrity.if = 'false'; }],
+  ['paso skipped', workflow => { workflow.jobs.integrity.steps[2].if = 'false'; }],
+  ['job permisivo', workflow => { workflow.jobs.integrity['continue-on-error'] = true; }],
+  ['paso permisivo', workflow => { workflow.jobs.integrity.steps[2]['continue-on-error'] = true; }],
+  ['if booleano false', workflow => { workflow.jobs.integrity.if = false; }],
+  ['permisos write del job', workflow => { workflow.jobs.integrity.permissions = { contents: 'write' }; }],
+  ['nombre de check sustituido', workflow => { workflow.jobs.integrity.name = 'otro'; }],
+  ['autorización desde el candidato', workflow => { workflow.jobs.integrity.env.CI_CONTROL_CHANGE_AUTHORIZATION = '${{ github.event.pull_request.body }}'; }],
+  ['env que altera el import', workflow => { workflow.jobs.integrity.env.NODE_OPTIONS = '--import candidato.mjs'; }],
+  ['env del paso que sustituye autorización', workflow => { workflow.jobs.integrity.steps[2].env = { CI_CONTROL_CHANGE_AUTHORIZATION: '{}' }; }],
 ]) test(`auditoría del workflow rechaza ${name}`, () => {
   const workflow = load('legal-trust'); mutate(workflow); assert.throws(() => secure(workflow, true));
 });
