@@ -198,3 +198,4 @@ export function verifyControls({ authorization, now = Date.now(), ...context }) 
   return { ...inspected, controlIntegrity: authorized ? 'authorized' : 'unchanged', authorization: authorized,
     legalInputsUnchanged: true, legalVerificationRequired: true, mergeApproval: false };
 }
+// CI-PROBE T02: unauthorized comment-only change; NO MERGE.
