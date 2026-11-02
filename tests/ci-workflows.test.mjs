@@ -5,23 +5,33 @@ import { parseDocument } from 'yaml';
 
 const checkout = 'actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd';
 const setup = 'actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f';
+const authorizationEnv = { CI_CONTROL_CHANGE_AUTHORIZATION_B64: '${{ secrets.CI_CONTROL_CHANGE_AUTHORIZATION }}' };
+const authorizationEnvironment = { name: 'ci-control-authorization', deployment: false };
 const load = name => {
   const document = parseDocument(readFileSync(`.github/workflows/${name}.yml`, 'utf8'), { uniqueKeys: true });
   assert.deepEqual(document.errors, []); return document.toJS();
 };
+const referencesSecrets = value => typeof value === 'string' ? /\bsecrets\b/i.test(value) :
+  value !== null && typeof value === 'object' && Object.entries(value).some(([key, child]) =>
+    referencesSecrets(key) || referencesSecrets(child));
 function secure(workflow, trusted) {
   assert.deepEqual(workflow.permissions, { contents: 'read' });
-  assert(!JSON.stringify(workflow).includes('secrets.'));
   assert(!workflow.on.workflow_run && !workflow.on.repository_dispatch);
   assert.equal(Boolean(workflow.on.pull_request_target), trusted);
+  if (trusted) assert.deepEqual(workflow.on, {
+    pull_request_target: { branches: ['main'], types: ['opened', 'synchronize', 'reopened', 'ready_for_review', 'edited'] },
+    workflow_dispatch: null,
+  }, 'Solo eventos de la base confiable; sin otra ruta al Environment');
   const jobs = Object.values(workflow.jobs); assert.equal(jobs.length, 1);
   const job = jobs[0]; assert.equal(job['runs-on'], 'ubuntu-24.04');
   assert.equal(job.if, undefined); assert.equal(job['continue-on-error'], undefined);
   assert.equal(job.permissions, undefined);
+  assert.equal(workflow.env, undefined);
+  assert.deepEqual(job.environment, trusted ? authorizationEnvironment : undefined,
+    'Solo el job confiable usa el Environment fijo, sin crear deployments');
   assert.equal(job.name, trusted ? 'legal-integrity' : 'web-quality');
   if (trusted) assert.deepEqual(job.env, {
     CI: 'true', LEGAL_BASELINE_SHA: '${{ vars.LEGAL_BASELINE_SHA }}',
-    CI_CONTROL_CHANGE_AUTHORIZATION: '${{ vars.CI_CONTROL_CHANGE_AUTHORIZATION }}',
     BASE_SHA: '${{ github.event.pull_request.base.sha || github.sha }}',
     CANDIDATE_SHA: '${{ github.event.pull_request.head.sha || github.sha }}',
     PR_NUMBER: '${{ github.event.pull_request.number }}',
@@ -36,8 +46,14 @@ function secure(workflow, trusted) {
   });
   assert.deepEqual(setupStep.with, { 'node-version': '22.21.1', 'check-latest': false, 'package-manager-cache': false });
   assert.equal(runStep.run, trusted ? 'node scripts/ci/trusted-legal.mjs' : 'node scripts/ci/verify-web.mjs');
-  assert(job.steps.every(step => step.if === undefined && step['continue-on-error'] === undefined && step.env === undefined));
-  assert(!job.environment && !job.services && !job.container);
+  assert.equal(checkoutStep.env, undefined); assert.equal(setupStep.env, undefined);
+  assert.deepEqual(runStep.env, trusted ? authorizationEnv : undefined);
+  const rest = structuredClone(workflow);
+  if (trusted) delete rest.jobs.integrity.steps[2].env;
+  assert(!referencesSecrets(rest), 'Ningún otro acceso a Secrets');
+  assert(!JSON.stringify(workflow).includes('vars.CI_CONTROL_CHANGE_AUTHORIZATION'), 'Sin fallback a Variable');
+  assert(job.steps.every(step => step.if === undefined && step['continue-on-error'] === undefined));
+  assert(!job.services && !job.container);
 }
 test('workflows válidos YAML, acciones con SHA documentado, sin privilegios, caches ni despliegues', () => {
   secure(load('web-ci'), false); secure(load('legal-trust'), true);
@@ -46,7 +62,8 @@ test('control de confianza usa la base y pin externo; no instala ni ejecuta el c
   const workflow = load('legal-trust'); secure(workflow, true);
   assert.equal(workflow.jobs.integrity.env.LEGAL_BASELINE_SHA, '${{ vars.LEGAL_BASELINE_SHA }}');
   assert.deepEqual(workflow.on.pull_request_target.branches, ['main']);
-  assert.equal(workflow.jobs.integrity.env.CI_CONTROL_CHANGE_AUTHORIZATION, '${{ vars.CI_CONTROL_CHANGE_AUTHORIZATION }}');
+  assert.equal(workflow.jobs.integrity.env.CI_CONTROL_CHANGE_AUTHORIZATION, undefined);
+  assert.deepEqual(workflow.jobs.integrity.steps[2].env, authorizationEnv);
   assert.equal(workflow.jobs.integrity.if, undefined);
 });
 for (const [name, mutate] of [
@@ -67,8 +84,45 @@ for (const [name, mutate] of [
   ['autorización desde el candidato', workflow => { workflow.jobs.integrity.env.CI_CONTROL_CHANGE_AUTHORIZATION = '${{ github.event.pull_request.body }}'; }],
   ['env que altera el import', workflow => { workflow.jobs.integrity.env.NODE_OPTIONS = '--import candidato.mjs'; }],
   ['env del paso que sustituye autorización', workflow => { workflow.jobs.integrity.steps[2].env = { CI_CONTROL_CHANGE_AUTHORIZATION: '{}' }; }],
+  ['Secret en todo el job', workflow => { workflow.jobs.integrity.env.CI_CONTROL_CHANGE_AUTHORIZATION_B64 = authorizationEnv.CI_CONTROL_CHANGE_AUTHORIZATION_B64; }],
+  ['Secret en checkout', workflow => { workflow.jobs.integrity.steps[0].env = authorizationEnv; }],
+  ['Secret en setup', workflow => { workflow.jobs.integrity.steps[1].env = authorizationEnv; }],
+  ['otro Secret en el paso confiable', workflow => { workflow.jobs.integrity.steps[2].env.CI_CONTROL_CHANGE_AUTHORIZATION_B64 = '${{ secrets.OTHER_SECRET }}'; }],
+  ['Variable como transporte', workflow => { workflow.jobs.integrity.steps[2].env.CI_CONTROL_CHANGE_AUTHORIZATION_B64 = '${{ vars.CI_CONTROL_CHANGE_AUTHORIZATION }}'; }],
+  ['doble canal Variable o Secret', workflow => { workflow.jobs.integrity.steps[2].env.CI_CONTROL_CHANGE_AUTHORIZATION_B64 = '${{ secrets.CI_CONTROL_CHANGE_AUTHORIZATION || vars.CI_CONTROL_CHANGE_AUTHORIZATION }}'; }],
+  ['Secret interpolado en shell', workflow => { workflow.jobs.integrity.steps[2].run += ' ${{ secrets.CI_CONTROL_CHANGE_AUTHORIZATION }}'; }],
+  ['Secret ajeno por índice', workflow => { workflow.name = "${{ secrets['OTHER_SECRET'] }}"; }],
+  ['volcado del contexto completo de Secrets', workflow => { workflow.name = '${{ toJSON(secrets) }}'; }],
+  ['acceso a Secrets con mayúsculas y whitespace', workflow => { workflow.name = '${{ SECRETS\t.OTHER_SECRET }}'; }],
+  ['Environment ausente', workflow => { delete workflow.jobs.integrity.environment; }],
+  ['Environment de nombre alternativo', workflow => { workflow.jobs.integrity.environment.name = 'otro'; }],
+  ['Environment elegido por el candidato', workflow => { workflow.jobs.integrity.environment.name = '${{ github.event.pull_request.head.ref }}'; }],
+  ['Environment abreviado con deployment implícito', workflow => { workflow.jobs.integrity.environment = 'ci-control-authorization'; }],
+  ['Environment que crea deployments', workflow => { workflow.jobs.integrity.environment.deployment = true; }],
+  ['Environment con deployment omitido', workflow => { delete workflow.jobs.integrity.environment.deployment; }],
+  ['Environment con booleano convertido a texto', workflow => { workflow.jobs.integrity.environment.deployment = 'false'; }],
+  ['Environment con expresión de deployment', workflow => { workflow.jobs.integrity.environment.deployment = '${{ false }}'; }],
+  ['Environment con propiedad adicional', workflow => { workflow.jobs.integrity.environment.url = 'https://example.invalid'; }],
+  ['env general que abre otra ruta al transporte', workflow => { workflow.env = { CI_CONTROL_CHANGE_AUTHORIZATION_B64: 'otro' }; }],
+  ['evento pull_request adicional con acceso al Environment', workflow => { workflow.on.pull_request = { branches: ['main'] }; }],
+  ['evento push adicional con acceso al Environment', workflow => { workflow.on.push = { branches: ['main'] }; }],
 ]) test(`auditoría del workflow rechaza ${name}`, () => {
-  const workflow = load('legal-trust'); mutate(workflow); assert.throws(() => secure(workflow, true));
+  const workflow = load('legal-trust'); mutate(workflow);
+  assert.throws(() => secure(workflow, true), assert.AssertionError);
+});
+test('Environment solo en legal-integrity; web-quality permanece aislado de autorizaciones', () => {
+  const trusted = load('legal-trust'), candidate = load('web-ci');
+  secure(trusted, true); secure(candidate, false);
+  assert.deepEqual(trusted.jobs.integrity.environment, authorizationEnvironment);
+  assert.equal(candidate.jobs.web.environment, undefined);
+  candidate.jobs.web.environment = { ...authorizationEnvironment };
+  assert.throws(() => secure(candidate, false), assert.AssertionError);
+});
+test('web-quality no puede recibir Secrets ni el transporte de autorización', () => {
+  for (const value of [authorizationEnv, { TOKEN: '${{ secrets.CLOUDFLARE_API_TOKEN }}' }]) {
+    const workflow = load('web-ci'); workflow.jobs.web.steps[2].env = value;
+    assert.throws(() => secure(workflow, false), assert.AssertionError);
+  }
 });
 test('CODEOWNERS protege todos los workflows y el propio archivo; aún requiere configuración remota', () => {
   const codeowners = readFileSync('.github/CODEOWNERS', 'utf8');

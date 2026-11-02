@@ -1,7 +1,8 @@
 name: RLVO Legal Trust
 
 # Excepción deliberada: nunca ejecuta NI hace checkout del código del PR.
-# Solo blobs Git como datos. No npm, caches, artefactos, secrets ni escritura.
+# Solo blobs Git como datos. Sin npm, caches, artefactos ni escritura.
+# Único Secret: autorización Base64, entregada solo al paso confiable.
 on:
   pull_request_target:
     branches: [main]
@@ -20,10 +21,12 @@ jobs:
     name: legal-integrity
     runs-on: ubuntu-24.04
     timeout-minutes: 10
+    environment:
+      name: ci-control-authorization
+      deployment: false
     env:
       CI: 'true'
       LEGAL_BASELINE_SHA: ${{ vars.LEGAL_BASELINE_SHA }}
-      CI_CONTROL_CHANGE_AUTHORIZATION: ${{ vars.CI_CONTROL_CHANGE_AUTHORIZATION }}
       BASE_SHA: ${{ github.event.pull_request.base.sha || github.sha }}
       CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
       PR_NUMBER: ${{ github.event.pull_request.number }}
@@ -43,4 +46,6 @@ jobs:
           check-latest: false
           package-manager-cache: false
       - name: Verify CI controls from the base and legal integrity from the pinned baseline
+        env:
+          CI_CONTROL_CHANGE_AUTHORIZATION_B64: ${{ secrets.CI_CONTROL_CHANGE_AUTHORIZATION }}
         run: node scripts/ci/trusted-legal.mjs
