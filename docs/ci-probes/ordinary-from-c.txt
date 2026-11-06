@@ -1,0 +1,3 @@
+Prueba positiva de PR ordinario del checker CI.
+Base: 3a11b33e27da76175831894d4255a817d56e6738
+NO MERGE. Este archivo no concede autorizaciones.
