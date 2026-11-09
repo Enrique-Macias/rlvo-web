@@ -1,0 +1,141 @@
+{
+  "baseSha": "3a11b33e27da76175831894d4255a817d56e6738",
+  "changesDigest": "e375a144866d6d90732416d96c8fd4887f2aa793dd74111fd5a66874900a5d17",
+  "cleanup": {
+    "autoMerge": false,
+    "deployments": 0,
+    "draft": true,
+    "evidenceClass": "github_observed",
+    "merged": false,
+    "pendingKnownRuns": 0,
+    "pullRequestState": "closed",
+    "releases": 0,
+    "remainingEnvironmentSecrets": 0,
+    "remainingEnvironmentVariables": 0,
+    "secretIndividualGet": 404,
+    "secretListGet": 200
+  },
+  "derivatives": [
+    {
+      "bytes": 2390,
+      "path": "negative.md",
+      "sha256": "3ba0a065787808c00e0c9361b52d2313f510cf18f31ba604622036dfee2a808a"
+    },
+    {
+      "bytes": 3234,
+      "path": "positive.md",
+      "sha256": "7e36b25a8ce864d9f3844394ec2a5ba9082716dfc87d48a9a74a6d896a648b12"
+    },
+    {
+      "bytes": 3312,
+      "path": "closure.md",
+      "sha256": "21569dfe83ae04f9c8c18b604604c362e8a13583d3b9af0c2c7ff360dbfa4903"
+    }
+  ],
+  "evidenceClasses": {
+    "github_observed": "Estados, jobs, eventos, SHA, App y salidas del checker observados en GitHub; consultas autenticadas de limpieza.",
+    "local_audit": "Comparación de bytes, hashes, digest y análisis de exposición; no constituyen una atestación independiente de GitHub.",
+    "user_verified": "Configuración de Cloudflare y Vercel confirmada por el propietario, sin verificación independiente de las plataformas."
+  },
+  "headSha": "ed698ce018a8d1d58900bd643cea3d04086a6880",
+  "kind": "ci-authorization-test-evidence",
+  "legalOutcome": {
+    "evidenceClass": "github_observed",
+    "markers": 23,
+    "negative": "success",
+    "positive": "success",
+    "releases": 0
+  },
+  "limits": [
+    "No actual merge rejection by required checks was tested.",
+    "Deleting or expiring authorization does not revoke previous successful checks.",
+    "Authorization can be reused in the same context while valid.",
+    "Environment precedence, forks and other events were not verified by this remote test.",
+    "No exposure was detected in examined logs; absence of every possible leak is not proven.",
+    "Main update restriction remains active; ordinary merge operation is pending.",
+    "This local documentary candidate does not approve future changes, merge or publication."
+  ],
+  "pullRequest": 9,
+  "pullRequestUrl": "https://github.com/Enrique-Macias/rlvo-web/pull/9",
+  "redactionPolicy": {
+    "excluded": [
+      "authorization JSON and Base64",
+      "authorization identifier and exact record timestamps",
+      "tokens credentials and secret values",
+      "private filesystem paths",
+      "raw logs and full API responses",
+      "checkout snapshots and internal metadata",
+      "unrelated external projects"
+    ],
+    "strategy": "explicit-public-allowlist"
+  },
+  "repository": "Enrique-Macias/rlvo-web",
+  "runs": [
+    {
+      "aggregate": "CI_TRUST_FAILURE",
+      "appId": 15368,
+      "cause": "CI_AUTH_REQUIRED",
+      "conclusion": "failure",
+      "event": "pull_request_target",
+      "exitCode": 1,
+      "expected": true,
+      "id": 42332590926,
+      "job": "legal-integrity",
+      "jobId": 128282247570,
+      "phase": "negative"
+    },
+    {
+      "appId": 15368,
+      "conclusion": "success",
+      "event": "pull_request",
+      "expected": true,
+      "id": 42332590721,
+      "job": "web-quality",
+      "jobId": 128282245816,
+      "phase": "negative"
+    },
+    {
+      "appId": 15368,
+      "conclusion": "success",
+      "controlIntegrity": "authorized",
+      "event": "pull_request_target",
+      "expected": true,
+      "id": 42421634910,
+      "job": "legal-integrity",
+      "jobId": 128551115423,
+      "mergeApproval": false,
+      "phase": "positive"
+    },
+    {
+      "appId": 15368,
+      "conclusion": "success",
+      "event": "pull_request",
+      "expected": true,
+      "id": 42421634599,
+      "job": "web-quality",
+      "jobId": 128551113427,
+      "phase": "positive"
+    }
+  ],
+  "schemaVersion": 1,
+  "sourceEvidence": [
+    {
+      "bytes": 75520,
+      "name": "final-evidence.json",
+      "sha256": "5c2c0110db5c5f6745ace1bc324ca4c0c112ed26621928581c947c45a6a80b7a",
+      "storage": "private-original-not-published"
+    },
+    {
+      "bytes": 3768,
+      "name": "positive-test-redacted-evidence.json",
+      "sha256": "3395e6d4734868f4026c02a21333b64171cb903577438839e5a38c28f52d0301",
+      "storage": "private-original-not-published"
+    },
+    {
+      "bytes": 11199,
+      "name": "positive-test-final-audit.json",
+      "sha256": "318973fe46988741b4dd337478d2324654d3b40ba0742502c4da2c8b2cf7adc2",
+      "storage": "private-original-not-published"
+    }
+  ]
+}

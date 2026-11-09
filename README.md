@@ -84,29 +84,22 @@ ningún release, `v1.0` ni activación. El manifiesto estático
 con digest hexadecimal y punteros nulos `terminos`/`aviso_privacidad`.
 Las rutas versionadas solo se generarán desde releases aprobados registrados.
 
-El lock protege bytes y metadata; CI exige un SHA de confianza y debe ejecutar
-el checker desde esa referencia protegida. Configurar esa protección externa
-sigue pendiente. Ver [arquitectura legal](docs/LEGAL_VERSIONING.md),
-[contrato backend](docs/PL-016-WEB-INTEGRATION-CONTRACT.md) y
-[runbook de publicación](docs/LEGAL_PUBLICATION_RUNBOOK.md).
+El lock protege bytes y metadata. CI exige el baseline histórico protegido bd46ee5a1d6e0adbc0eeab27db3c01fe76b34cc4, conservado en legal-history-baseline bajo el Ruleset 26149031, y ejecuta su checker confiable. Esta protección no aprueba contenido ni autoriza releases. Ver [arquitectura legal](docs/LEGAL_VERSIONING.md), [contrato backend](docs/PL-016-WEB-INTEGRATION-CONTRACT.md) y [runbook de publicación](docs/LEGAL_PUBLICATION_RUNBOOK.md).
 
 `npm run compare:legal -- <tipo> <version> <copia.md>` comprueba una copia
 archivada de un release contra la fuente y su digest, sin escribir ni activar.
 Con una preview local iniciada, `npm run test:legal:http --
 http://127.0.0.1:4391` comprueba descargas y 404 reales.
 
-## CI — bloque 4A aprobado localmente
+## CI — bootstrap validado; operación ordinaria pendiente
 
-`npm run ci:web` ejecuta instalación desde lock, las pruebas, Astro check,
-ambos builds/auditorías, pruebas HTTP y detección de reescrituras legales.
-Requiere Node 22.21.1, npm 10.9.4 y `LEGAL_BASELINE_REF` como SHA completo
-explícito. `npm run test:ci` comprueba integridad y seguridad de los workflows.
+`npm run ci:web` ejecuta instalación desde lock, pruebas, Astro check, ambos builds y auditorías, pruebas HTTP y detección de reescrituras legales. Requiere Node 22.21.1, npm 10.9.4 y LEGAL_BASELINE_REF como SHA completo explícito.
 
-La CI habitual del candidato está separada del control jurídico, que usa la
-base revisada y el checker del baseline sin ejecutar código del PR.
-Los workflows y CODEOWNERS no habilitan protecciones remotas por sí mismos.
-El commit local está autorizado; faltan autorización de push, bootstrap y configuración externa. Ver
-[modelo de confianza y pasos remotos](docs/CI_PHASE_4A.md).
+web-quality evalúa el candidato. legal-integrity ejecuta el checker de la base confiable, lee el candidato como objetos Git y conserva el control jurídico independiente. Los cambios críticos requieren una autorización nueva y temporal mediante Secret Base64 del Environment ci-control-authorization; los cambios ordinarios no requieren ese Secret. Ninguna autorización CI admite excepciones jurídicas.
+
+El bootstrap está incorporado en main C = 3a11b33e27da76175831894d4255a817d56e6738. Las pruebas negativa y positiva del PR #9 quedaron cerradas sin merge, con limpieza verificada del Secret. Los Rulesets siguen activos y sin bypass. La regla temporal update todavía inmoviliza main; su retirada requiere autorización separada.
+
+Un check verde no autoriza un merge ni un despliegue. La eliminación o caducidad del Secret no revoca resultados anteriores. Ver [estado y operación de CI](docs/CI_CONTROL_INTEGRITY.md) y [registro de Fase 4A](docs/CI_PHASE_4A.md).
 
 ## Calidad local — bloque 4B
 
@@ -119,9 +112,7 @@ Ver [cobertura, condiciones y límites WCAG](docs/QA_PHASE_4B.md).
 
 ## Publicación pendiente
 
-`wrangler.jsonc` conserva Workers Static Assets: sirve `dist/`, sin adaptador
-SSR ni código Worker. Esta fase no crea recursos ni conecta dominios; no se
-inspeccionó la cuenta remota para confirmar el alojamiento efectivo.
+La configuración local conserva Workers Static Assets. Según la verificación del propietario (USER-VERIFIED), Cloudflare mantiene desactivados los builds automáticos de producción y preview, sin Deploy Hooks, y no hay proyectos de Vercel bajo su administración vinculados al repositorio. Esto no demuestra experimentalmente la imposibilidad de futuros builds. Reactivar integraciones o desplegar requiere autorización independiente.
 
 Privacidad, términos y eliminación de cuenta siguen siendo borradores visibles
 con `[[POR CONFIRMAR]]`, `noindex` y exclusión del sitemap. No publicar hasta
