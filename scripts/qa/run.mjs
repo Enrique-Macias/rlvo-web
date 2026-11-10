@@ -1,40 +1,52 @@
-import { spawn } from 'node:child_process';
 import { resolve } from 'node:path';
-import { mkdirSync, writeFileSync, rmSync } from 'node:fs';
+import assert from 'node:assert/strict';
 import { captureInputs, assertInputsUnchanged } from '../ci/inputs.mjs';
 import { verifyProtectedFiles } from './integrity.mjs';
 import { startServer } from './server.mjs';
-const profile = process.argv[2];
-if (!['smoke', 'full', 'lighthouse'].includes(profile) || process.argv.length !== 3) throw new Error('Uso: npm run qa:smoke | qa:full | qa:lighthouse');
+import { runCommand } from './command.mjs';
+import { beginRun, binding, captureContext, finishRun, profiles, runDirectory, saveRun, sealRun, writeJSON } from './evidence.mjs';
+
+const profile = process.argv[2], root = resolve('qa');
+if (!profiles.includes(profile)) throw new Error('Uso: npm run qa:smoke | qa:full | qa:lighthouse');
 process.env.PLAYWRIGHT_BROWSERS_PATH ??= resolve('qa/browsers');
-const before = captureInputs(process.cwd());
-const protectedFiles = verifyProtectedFiles();
-const startedAt = new Date().toISOString();
-mkdirSync(`qa/${profile}`, { recursive: true });
-rmSync(`qa/${profile}/integrity.json`, { force: true });
-writeFileSync(`qa/${profile}/run.json`, JSON.stringify({ profile, startedAt, status: 'running' }, null, 2) + '\n');
-const run = (program, args, env = {}) => new Promise((resolve, reject) => {
-  const child = spawn(program, args, { env: { ...process.env, ...env }, stdio: 'inherit' });
-  child.once('error', reject); child.once('exit', code => code === 0 ? resolve() : reject(new Error(`${program} terminó con código ${code}`)));
-});
-let server, passed = false;
+// Registrar la invocación antes de preflight, build o lectura de fuentes protegidas.
+const execution = beginRun(root, profile), directory = runDirectory(root, execution.runId);
+console.log(`QA ${profile}: ${execution.runId}\nEvidencia: ${directory}`);
+const controller = new AbortController();
+let interruption, server, before, failure;
+const interrupt = signal => { interruption ??= signal; controller.abort(new Error(`QA interrumpido: ${signal}`)); };
+const onInt = () => interrupt('SIGINT'), onTerm = () => interrupt('SIGTERM');
+process.on('SIGINT', onInt); process.on('SIGTERM', onTerm);
 try {
-  await run('npm', ['run', 'build']);
-  server = await startServer();
-  const env = { QA_BASE_URL: server.url, QA_PROFILE: profile };
-  if (profile === 'lighthouse') await run(process.execPath, ['scripts/qa/lighthouse.mjs'], env);
-  else await run(process.execPath, ['node_modules/@playwright/test/cli.js', 'test'], env);
-  passed = true;
+  if (process.argv.length !== 3) throw new Error('El perfil QA no admite filtros ni argumentos adicionales');
+  execution.context = captureContext(); saveRun(root, execution);
+  before = captureInputs(process.cwd());
+  const protectedFiles = verifyProtectedFiles();
+  await runCommand('npm', ['run', 'build'], { env: { SITE_ENV: 'production' }, signal: controller.signal });
+  server = await startServer(controller.signal);
+  const env = { QA_BASE_URL: server.url, QA_PROFILE: profile, QA_RUN_ID: execution.runId, QA_CONTEXT_HASH: binding(execution).contextHash };
+  await runCommand(process.execPath, profile === 'lighthouse' ? ['scripts/qa/lighthouse.mjs'] : ['node_modules/@playwright/test/cli.js', 'test'], { env, signal: controller.signal });
+  await server.stop(); server = undefined;
+  controller.signal.throwIfAborted();
+  assertInputsUnchanged(before, captureInputs(process.cwd()));
+  verifyProtectedFiles();
+  assert.deepEqual(captureContext(), execution.context, 'Fuentes o runtime cambiaron durante QA');
+  writeJSON(`${directory}/integrity.json`, { qa: binding(execution), protectedFiles, unchanged: true, releases: 0,
+    current: { terminos: null, aviso_privacidad: null } });
+  sealRun(root, execution);
+  controller.signal.throwIfAborted();
+} catch (error) {
+  failure = error;
 } finally {
-  let integrityPassed = false;
   try {
     if (server) await server.stop();
-    assertInputsUnchanged(before, captureInputs(process.cwd()));
+    if (before) assertInputsUnchanged(before, captureInputs(process.cwd()));
     verifyProtectedFiles();
-    writeFileSync(`qa/${profile}/integrity.json`, JSON.stringify({ protectedFiles, unchanged: true, releases: 0, current: { terminos: null, aviso_privacidad: null } }, null, 2) + '\n');
-    integrityPassed = true;
-    console.log(`Integridad QA: ${protectedFiles} fuentes protegidas y ${Object.keys(before).length} inputs sin alteraciones.`);
-  } finally {
-    writeFileSync(`qa/${profile}/run.json`, JSON.stringify({ profile, startedAt, finishedAt: new Date().toISOString(), status: passed && integrityPassed ? 'passed' : 'failed' }, null, 2) + '\n');
-  }
+  } catch (error) { failure ??= error; }
+  finishRun(root, execution, interruption ? 'interrupted' : failure ? 'failed' : 'passed', failure);
+  process.removeListener('SIGINT', onInt); process.removeListener('SIGTERM', onTerm);
 }
+if (failure || interruption) {
+  console.error(failure?.message ?? interruption);
+  process.exitCode = 1;
+} else console.log(`QA ${profile}: evidencia completa y sellada. Ejecutar qa:report para verificar vigencia y alcance.`);

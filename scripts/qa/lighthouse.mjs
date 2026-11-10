@@ -2,18 +2,20 @@ import lighthouse from 'lighthouse';
 import { chromium } from '@playwright/test';
 import { mkdtempSync, readFileSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
+import { runDirectory } from './evidence.mjs';
+import { lighthousePages, lighthouseSettings } from './results.mjs';
 
 const origin = process.env.QA_BASE_URL;
 if (!origin || !/^http:\/\/127\.0\.0\.1:\d+\/$/.test(origin)) throw new Error('Lighthouse solo sobre la preview local propia');
-const output = 'qa/lighthouse'; mkdirSync(output, { recursive: true });
-const settings = { onlyCategories: ['performance', 'accessibility', 'best-practices', 'seo'], formFactor: 'mobile', throttlingMethod: 'simulate',
-  screenEmulation: { mobile: true, width: 390, height: 844, deviceScaleFactor: 1, disabled: false },
-  throttling: { rttMs: 150, throughputKbps: 1638.4, cpuSlowdownMultiplier: 4 }, maxWaitForLoad: 45000 };
-const summary = { node: process.version, platform: `${process.platform}/${process.arch}`, conditions: settings,
+if (!process.env.QA_RUN_ID || !process.env.QA_CONTEXT_HASH || process.env.QA_PROFILE !== 'lighthouse') throw new Error('Usar npm run qa:lighthouse con metadata de ejecución');
+const qa = { schemaVersion: 1, runId: process.env.QA_RUN_ID, profile: 'lighthouse', contextHash: process.env.QA_CONTEXT_HASH };
+const output = runDirectory(resolve('qa'), qa.runId); mkdirSync(output, { recursive: true });
+const settings = lighthouseSettings;
+const summary = { qa, node: process.version, platform: `${process.platform}/${process.arch}`, conditions: settings,
   analytics: 'Beacon original sin interceptar en Lighthouse; E2E sí aísla requests externos. Sin cambios de HTML o instrumentación.',
   target: 95, blockingThreshold: false, pages: [] };
-for (const [slug, path] of [['inicio', '/'], ['contacto', '/contacto'], ['soporte', '/soporte']]) {
+for (const [slug, path] of lighthousePages) {
   const runs = [];
   for (let run = 1; run <= 3; run++) {
     const profile = mkdtempSync(join(tmpdir(), 'rlvo-lighthouse-'));
@@ -24,7 +26,7 @@ for (const [slug, path] of [['inicio', '/'], ['contacto', '/contacto'], ['soport
       const result = await lighthouse(new URL(path, origin).href, { port, logLevel: 'error', output: ['json', 'html'] }, { extends: 'lighthouse:default', settings });
       if (!result || result.lhr.runtimeError) throw new Error(JSON.stringify(result?.lhr.runtimeError ?? 'Lighthouse sin resultado'));
       const stem = `${output}/${slug}-${run}`;
-      writeFileSync(`${stem}.json`, result.report[0]); writeFileSync(`${stem}.html`, result.report[1]);
+      writeFileSync(`${stem}.json`, JSON.stringify({ ...result.lhr, qa }, null, 2) + '\n'); writeFileSync(`${stem}.html`, result.report[1]);
       const scores = Object.fromEntries(Object.entries(result.lhr.categories).map(([key, value]) => [key, Math.round(value.score * 100)]));
       runs.push({ run, scores, lighthouseVersion: result.lhr.lighthouseVersion, userAgent: result.lhr.userAgent, warnings: result.lhr.runWarnings,
         metrics: Object.fromEntries(['first-contentful-paint', 'largest-contentful-paint', 'total-blocking-time', 'cumulative-layout-shift', 'speed-index'].map(id => [id, result.lhr.audits[id]?.numericValue])),
