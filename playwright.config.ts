@@ -1,7 +1,10 @@
 import { defineConfig } from '@playwright/test';
 import { mkdirSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { runDirectory } from './scripts/qa/evidence.mjs';
 const profile = process.env.QA_PROFILE ?? 'smoke';
+if (!['smoke', 'full'].includes(profile) || !process.env.QA_RUN_ID || !process.env.QA_CONTEXT_HASH) throw new Error('Usar el runner QA con metadata de ejecución.');
+const output = runDirectory(resolve('qa'), process.env.QA_RUN_ID);
 const browsers = ['chromium', 'firefox', 'webkit'] as const;
 // Firefox 157/macOS 27: separar app-data de QA del Firefox personal (upstream #42768).
 // No se cambia HOME, TCC, la firma ni los bytes del navegador descargado.
@@ -14,8 +17,9 @@ if (!process.env.QA_BASE_URL || !/^http:\/\/127\.0\.0\.1:\d+\/$/.test(process.en
 export default defineConfig({
   testDir: './tests/e2e', fullyParallel: true, workers: 2, retries: 0,
   timeout: 60_000, expect: { timeout: 7000 },
-  outputDir: `qa/${profile}/artifacts`,
-  reporter: [['list'], ['json', { outputFile: `qa/${profile}/results.json` }], ['html', { outputFolder: `qa/${profile}/html`, open: 'never' }]],
+  metadata: { qa: { schemaVersion: 1, runId: process.env.QA_RUN_ID, profile, contextHash: process.env.QA_CONTEXT_HASH } },
+  outputDir: `${output}/artifacts`,
+  reporter: [['list'], ['json', { outputFile: `${output}/results.json` }], ['html', { outputFolder: `${output}/html`, open: 'never' }]],
   use: { baseURL: process.env.QA_BASE_URL, locale: 'es-MX', timezoneId: 'America/Monterrey', viewport: { width: 390, height: 844 },
     deviceScaleFactor: 1, screenshot: 'only-on-failure', trace: 'retain-on-failure', serviceWorkers: 'block' },
   projects: profile === 'full' ? [

@@ -101,7 +101,7 @@ El bootstrap está incorporado en main C = 3a11b33e27da76175831894d4255a817d56e6
 
 Un check verde no autoriza un merge ni un despliegue. La eliminación o caducidad del Secret no revoca resultados anteriores. Ver [estado y operación de CI](docs/CI_CONTROL_INTEGRITY.md) y [registro de Fase 4A](docs/CI_PHASE_4A.md).
 
-## Calidad local — bloque 4B
+## Calidad local — 4B y trazabilidad 4C.1
 
 `npm run qa:browsers` instala los tres motores de prueba en `qa/` (ignorado).
 `npm run qa:smoke` ejecuta Chromium rápido; `npm run qa:full` ejecuta las 84
@@ -109,6 +109,12 @@ combinaciones más escenarios de accesibilidad. `npm run qa:lighthouse` mide
 tres veces cada página indexable sobre producción local y conserva medianas.
 El full y Lighthouse se invocan explícitamente, separados del ciclo de desarrollo.
 Ver [cobertura, condiciones y límites WCAG](docs/QA_PHASE_4B.md).
+
+Cada invocación nueva conserva su UUID y evidencia en `qa/runs/`; los reportes
+anteriores no se reutilizan como fallback. `npm run qa:report -- --profiles smoke`
+verifica solo smoke; sin argumentos exige smoke, full y Lighthouse compatibles.
+`npm run test:qa` ejecuta las regresiones del agregador sin abrir navegadores.
+Ver [contrato, consulta histórica y códigos de salida](docs/QA_EVIDENCE.md).
 
 ## Publicación pendiente
 
