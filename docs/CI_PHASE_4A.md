@@ -1,5 +1,19 @@
 # Fase 4A — CI reproducible y confianza de documentos legales
 
+## Estado posterior al bootstrap — 7 de noviembre de 2026
+
+El bootstrap remoto está incorporado en main C = 3a11b33e27da76175831894d4255a817d56e6738. legal-history-baseline conserva bd46ee5a1d6e0adbc0eeab27db3c01fe76b34cc4 bajo el Ruleset 26149031. Main está protegida por el Ruleset 26397937, activo y sin bypass, con PR obligatorio, cero aprobaciones humanas, checks web-quality y legal-integrity de GitHub Actions App 15368, rama actualizada y bloqueo de borrado y force-push. La regla temporal update sigue activa; la operación ordinaria de merge todavía no está habilitada.
+
+El modelo vigente usa el checker de la base confiable y autorización externa para cambios críticos. legal-integrity referencia únicamente el Environment ci-control-authorization, limitado a main, con deployment:false. Su Secret Base64 se entrega solo al paso confiable. web-quality ejecuta el candidato en otro runner y no recibe esa autorización. CODEOWNERS no impone aprobaciones obligatorias; el propietario conserva la responsabilidad de revisar el diff y autorizar expresamente cada merge.
+
+El PR #9 quedó cerrado, Draft y sin merge. Los runs negativos 42332590926/42332590721 y positivos 42421634910/42421634599 validaron rechazo sin autorización y aceptación de la autorización exacta, manteniendo el control jurídico independiente. El Secret temporal fue eliminado y su ausencia verificada. No hubo deployments ni releases.
+
+El detalle técnico, la evidencia y las limitaciones vigentes se mantienen en [CI_CONTROL_INTEGRITY.md](CI_CONTROL_INTEGRITY.md). Los originales de evidencia se conservaron privadamente. Pendientes actuales: incorporación de este cierre documental y sus derivados redactados, transición controlada de update y decisiones separadas sobre pruebas adicionales de enforcement. Las pruebas no autorizan publicación jurídica ni cambios de Fase 4C.1.
+
+## Registro histórico del bloque inicial
+
+Todo el texto original conservado a continuación registra el diseño y la validación iniciales. Sus referencias a bootstrap pendiente, ausencia de Secrets o necesidad de segundo revisor pertenecen a ese estado histórico y no definen la configuración operativa vigente.
+
 Implementación local aprobada para commit, sujeta a la revisión final de seguridad. Sin push, deploy, modificación remota de GitHub/Cloudflare, migraciones ni cambios en Supabase, app móvil o Analytics. No incluye axe, pruebas visuales o navegadores de los bloques siguientes.
 
 ## Situación comprobada y límites

@@ -1,5 +1,29 @@
 # Fase 4A — Integridad de controles de CI, etapas 1 y 2
 
+## Estado verificado posterior al bootstrap — 7 de noviembre de 2026
+
+El bootstrap remoto de integridad de CI está incorporado. El PR #1 introdujo el checker confiable en c5cc91b718b41aeab685f3fe57fa50e3db654d6b. El PR #6 incorporó Secret/Base64 y Environment en C = 3a11b33e27da76175831894d4255a817d56e6738. La prueba del Secret espejo del PR #5 terminó en FAIL y ese puente permanece descartado.
+
+El PR #9 conserva P = ed698ce018a8d1d58900bd643cea3d04086a6880, hijo directo de C, con un único comentario inocuo en scripts/ci/control-policy.mjs. Quedó cerrado, Draft, sin merge ni auto-merge; su rama se conserva. Main permanece en C. No se incorporó Fase 4C.1.
+
+Sin autorización, legal-integrity 42332590926 rechazó P por CI_AUTH_REQUIRED, agregado CI_TRUST_FAILURE y exit 1; web-quality 42332590721 aprobó. Con autorización temporal válida, legal-integrity 42421634910 aprobó con controlIntegrity=authorized, digest e375a144866d6d90732416d96c8fd4887f2aa793dd74111fd5a66874900a5d17 y mergeApproval=false; web-quality 42421634599 aprobó. Los cuatro jobs proceden de GitHub Actions App 15368 y corresponden a P. En ambas fases el control jurídico independiente aprobó, con cero releases y 23 marcadores. Las pruebas no modificaron los 17 recursos jurídicos.
+
+El Secret CI_CONTROL_CHANGE_AUTHORIZATION se instaló únicamente en el Environment ci-control-authorization y se eliminó después del cierre. Se comprobó su ausencia mediante GET individual 404 y listado autenticado 200 con cero Secrets. El Environment quedó sin Variables; no había Secret homónimo de repositorio ni Variable antigua de autorización.
+
+El Ruleset 26397937 permanece activo sobre refs/heads/main, sin bypass: PR obligatorio, cero aprobaciones, web-quality y legal-integrity de App 15368, rama actualizada, bloqueo de borrado y force-push, y restricción temporal update. Main continúa inmovilizada. El Ruleset 26149031 protege legal-history-baseline en bd46ee5a1d6e0adbc0eeab27db3c01fe76b34cc4 y no se modificó.
+
+El Environment 26065779197 usa ramas seleccionadas: una única política main de tipo branch, sin tags, revisores, temporizador ni reglas personalizadas de Apps. La API devuelve can_admins_bypass=true; este campo no equivale a un bypass del Ruleset. El workflow utiliza deployment:false y contents:read. Se observaron cero deployments, releases y artifacts publicados; no quedaron runs pendientes.
+
+Los estados y logs proceden de GitHub. La comparación de bytes, el digest y el análisis de exposición se auditaron localmente. No se detectó exposición del transporte o del JSON en los logs examinados; no se afirma una garantía universal de confidencialidad. Cloudflare y Vercel conservan la etiqueta USER-VERIFIED. La suite vacía queued de Cloudflare no demuestra ejecución de un build.
+
+Las pruebas negativa y positiva del transporte quedan cerradas en este contexto. No autorizan futuros cambios, merges, publicaciones ni retiradas de reglas. El Secret eliminado o caducado no invalida checks verdes anteriores. La transición a operación ordinaria permanece pendiente de autorización.
+
+Los originales se conservaron privadamente y se verificaron byte por byte. Los [derivados redactados de PR #9](ci-evidence/pr-9/closure.md) son un candidato documental local para revisión; no implican publicación ni autorización de merge.
+
+## Registro histórico de preparación anterior al PR #6
+
+El texto de preparación y los resultados locales conservados a continuación describen su etapa y alcance originales. Las afirmaciones de que la migración era local o de que no se habían creado recursos remotos son registros históricos, no el estado actual. Para el estado vigente prevalece la sección anterior.
+
 Estado actual: **candidato definitivo exclusivamente local**, transporte de
 autorización mediante Secret/Base64 y Environment `ci-control-authorization` con
 deployment: false. Incluye la implementación local 4B.2B y la preparación posterior;
@@ -126,13 +150,14 @@ el digest autorizable: `verifyControls` las rechaza antes de leer la autorizaci�
 
 Límites de lectura: árbol de hasta 50,000 entradas y salida Git de 16 MiB; cada blob
 protegido hasta 4 MiB, total de blobs únicos hasta 64 MiB; timeout de cada comando
-Git de 10 s. No se afirman límites globales de duración del llamador: el futuro job
-debe conservar su timeout propio. Plataforma objetivo: Node 22.21.1 y Git SHA-1 en
+Git de 10 s. El job confiable declara un timeout de 10 minutos; los límites de lectura no
+constituyen por sí solos un timeout global de la biblioteca. Plataforma objetivo: Node 22.21.1 y Git SHA-1 en
 macOS/Linux (usa `/dev/null`); Windows y repos Git SHA-256 no están validados.
 
 ## Autorización externa v1
 
-Nombre externo propuesto: GitHub Actions **Secret** `CI_CONTROL_CHANGE_AUTHORIZATION`.
+Canal actual: GitHub Actions **Secret** `CI_CONTROL_CHANGE_AUTHORIZATION`,
+exclusivamente en el Environment `ci-control-authorization`.
 Contiene Base64 canónico del JSON UTF-8, no JSON plano. La biblioteca no lee env ni
 conoce el transporte: conserva exactamente el contrato de nueve campos descrito
 abajo. Solo el entrypoint confiable reconstruye el JSON desde el paso de la base;
@@ -167,7 +192,8 @@ Un éxito devuelve `controlIntegrity: unchanged|authorized`, evidencia y siempre
 `mergeApproval:false` y `legalVerificationRequired:true`. Solo constata igualdad de
 inputs jurídicos entre base/head. **No sustituye** el checker del baseline aprobado,
 la política drafts-only, los 23 marcadores, normalización, contratos ni tests legales.
-La etapa 2 deberá ejecutarlos incondicionalmente, incluso tras mantenimiento de CI.
+La integración los intenta de forma independiente tras validar contexto y refs,
+incluso cuando se rechaza la autorización de CI.
 
 Errores son `ControlPolicyError` con `code` estable y mensaje prefijado. Códigos:
 `CI_CONTEXT`, `CI_REF`, `CI_GIT`, `CI_ANCESTRY`, `CI_TREE`, `CI_BLOB_SIZE`,
@@ -279,13 +305,9 @@ CI_AUTH_TRANSPORT y la evaluación jurídica independiente. Un Secret ausente pe
 PR ordinarios; cambios críticos conservan CI_AUTH_REQUIRED. La eliminación del Secret
 no revoca un check exitoso anterior: se conserva el procedimiento de evidencia nueva.
 
-Pendientes **NO VERIFICADOS LOCALMENTE**: disponibilidad y precedencia efectiva del
-Environment Secret, reglas exactas de rama en pull_request_target/forks/manual,
-rechazo de acceso desde un workflow candidato, redacción del runner, ausencia de
-objetos deployment y asociación/bloqueo de checks obligatorios. Las pruebas locales
-solo auditan YAML y ejecutan el checker en fixtures Git; no emulan esas garantías.
-Antes de retirar una inmovilización de main se requieren pruebas remotas separadas,
-sin permisos de despliegue ni cambios al baseline o a su Ruleset.
+En GitHub se verificaron la entrega del Environment Secret a legal-integrity mediante pull_request_target sobre main, la aceptación de la autorización exacta de PR #9 y el rechazo del mismo candidato sin autorización. Se observaron la asociación de los checks a P/App 15368, el control jurídico independiente y la ausencia de deployments y artifacts en esas ejecuciones.
+
+Continúan fuera de esta prueba la precedencia ante Secrets homónimos en varios ámbitos, forks, otros eventos, la revocación automática de resultados anteriores y un intento real de merge rechazado. Las variantes de autorización inválida, caducada, con SHA/PR/digest distintos y la no herencia a procesos hijos cuentan con evidencia local; no se presentan como pruebas remotas realizadas.
 
 Referencias oficiales:
 - https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/control-deployments
@@ -348,7 +370,7 @@ redacción del runner, bloqueo de PRs ni garantías de las protecciones de main.
 El puente del PR #5 sigue descartado. No se autoriza ningún bootstrap administrativo
 ni se cambia la configuración remota como consecuencia de estos resultados.
 
-## Integración local: invocación y orden de evaluación
+## Integración confiable: invocación y orden de evaluación
 
 El workflow conserva `pull_request_target`, sus tipos y filtro main, los pins de
 acciones y Node, runner hospedado, timeout y `contents: read`. No se instala npm ni
@@ -392,8 +414,8 @@ env:
 
 Un Secret ausente se representa como vacío; es válido sin diferencias críticas.
 No hay fallback implementado a vars, JSON plano, archivos o flags. La resolución de
-Secrets entre ámbitos tiene el límite descrito arriba. La disponibilidad efectiva y
-redacción en pull_request_target quedan **NO VERIFICADAS** hasta pruebas autorizadas.
+Secrets entre ámbitos tiene el límite descrito arriba. La entrega efectiva y el análisis de redacción en el contexto de PR #9 cuentan
+con la evidencia acotada descrita al inicio; otros contextos siguen sin probarse.
 La API de Secrets permite consultar metadatos, no recuperar el valor como en Variables.
 
 Secuencia del entrypoint:
@@ -421,11 +443,11 @@ Secuencia del entrypoint:
    baseline, evento, PR, digest, authorizationId (si procede), resultado jurídico y
    mergeApproval=false. No se imprime el JSON crudo de autorización ni secrets.
 
-En producción futura GitHub deberá convertir el exit 1 en failure del job; aquí
-solo se demuestra el código del proceso y la ausencia de mecanismos YAML permisivos.
-No se afirma todavía asociación con el PR, bloqueo de merge o protección de main.
+En PR #9, GitHub registró failure ante CI_AUTH_REQUIRED y success ante la
+autorización válida. Se verificaron los jobs, eventos, candidato y App de origen.
+Esto no demuestra por sí solo el rechazo de un intento real de merge.
 
-## Autorizar mantenimiento legítimo (operación futura, no ejecutada)
+## Autorizar mantenimiento legítimo (procedimiento sujeto a autorización específica)
 
 1. Mantener Cloudflare desactivado. Preparar un PR técnico acotado, independiente de
    los documentos jurídicos. Identificar base/head exactos y revisar todo el diff.
@@ -476,7 +498,9 @@ podría reutilizar un resultado anterior que GitHub acepte. Enforcement automát
 de revocación al instante del merge necesitaría otro diseño/servicio o control de
 merge independiente y autorización separada; no se atribuye esa garantía al checker.
 
-## Migración desde main: puente descartado tras PR #5
+## Registro histórico de migración: puente descartado tras PR #5
+
+Este apartado conserva el estado anterior al PR #6; no describe el main actual.
 
 El workflow de main c5cc91b todavía ejecuta la versión que lee vars. Cambiar el
 candidato no hace que esa base lea Secrets: el PR de migración necesita autorización
