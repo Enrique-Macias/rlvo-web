@@ -88,10 +88,43 @@ No equivalen a validación TLS, gateway, credenciales o contrato desplegado en S
 ni a validación Cloudflare alojada, Access o crawler WhatsApp.
 
 ## Procedimiento alojado pendiente
-Revisión jurídica antes de deployment según el contrato backend, incluida su aplicación
-a STAGING privado. Después: recurso aislado con ingreso cerrado e integración apagada,
-Access privado autorizado, comprobación del hostname y endpoint, Secret server-side
-aportado por el propietario mediante canal seguro y pruebas negativas/sintéticas autorizadas.
+La política operativa vigente es **LEG-DEV-01**, integrada en backend mediante
+[PR #25](https://github.com/Enrique-Macias/Relevo-Marketplace/pull/25), merge
+`971a855a654a97359aac1d0030a66fa9418f15db` (commit documental
+`5ec64ece0833a25a003b50b44d82576937a5b8c2`). Fuentes de esa versión integrada:
+[política central en PRE_LAUNCH_DEBT](https://github.com/Enrique-Macias/Relevo-Marketplace/blob/971a855a654a97359aac1d0030a66fa9418f15db/docs/PRE_LAUNCH_DEBT.md#leg-dev-01--desarrollo-técnico-frente-a-pendientes-jurídicos--decidida-propietario-técnico),
+[regla por ambiente de Share Links](https://github.com/Enrique-Macias/Relevo-Marketplace/blob/971a855a654a97359aac1d0030a66fa9418f15db/docs/architecture/database/share-links.md#dependencias) y
+[LEGAL_FEATURE_REGISTER](https://github.com/Enrique-Macias/Relevo-Marketplace/blob/971a855a654a97359aac1d0030a66fa9418f15db/docs/LEGAL_FEATURE_REGISTER.md#enlaces-compartibles-share-links).
+Esta política sustituye la exigencia anterior de completar la revisión jurídica de
+lanzamiento antes de cualquier deployment STAGING privado:
+
+- Desarrollo local, implementación y pruebas automatizadas no esperan los pendientes
+  jurídicos de lanzamiento.
+- W2-D1 puede crear y desplegar el Worker independiente con ingreso cerrado e integración
+  apagada, endpoint vacío, sin credenciales Supabase ni datos de usuarios, con autorización
+  de infraestructura para cada acción y sin modificar producción.
+- STAGING privado y pruebas técnicas con datos sintéticos pueden avanzar con aislamiento
+  de PROD, controles de seguridad vigentes y autorización técnica específica de cada fase.
+- La exposición anónima temporal exclusivamente sintética, por ejemplo para WhatsApp,
+  requiere autorización separada con alcance y retiro definidos; no es lanzamiento público.
+- Los datos reales de testers o socios también son datos reales en STAGING: se deben evaluar
+  y respetar las condiciones aplicables a esa prueba. Una build de fase D que genere enlaces
+  de esas personas no constituye por sí sola una prueba sintética.
+- PROD y lanzamiento o apertura de enlaces a usuarios reales requieren todas las entradas
+  jurídicas aplicables en **VERIFIED**, con la evidencia correspondiente a su tipo.
+  VERIFIED no es requisito previo de las pruebas técnicas autorizadas anteriores.
+- LEG-DEV-01 no suspende obligaciones, controles ni condiciones de documentos protegidos.
+  Si se incorporan formularios, analytics, waitlist o cookies no esenciales, sigue vigente
+  la condición de revisión previa a deployment indicada en PRIVACY_SPEC.
+- Aprobación técnica, merge, deployment STAGING y pruebas sintéticas no equivalen a
+  aprobación jurídica ni cambian estados del registro. **LEG-SL-01 a LEG-SL-06 siguen
+  en PENDING**; el registro central no se duplica ni se cierra desde este repositorio.
+
+Las autorizaciones permanecen separadas: W2-D1 cerrado/apagado; W2-A1 Access e ingreso
+privado; W2-S1 credenciales server-side y conexión STAGING; W2-Q1 fixtures sintéticos;
+W2-Q2 exposición temporal y WhatsApp; fase D móvil y PROD. Esta actualización documental
+no acredita que el Worker ya esté creado. Conserva la evidencia local histórica de W2-I1
+y W2-F1; la ejecución alojada se registra por separado.
 Nunca recuperar la clave desde Supabase ni copiar secretos al repositorio/build.
 Access puede introducir autenticación/cookies de su capa; no son cookies del Worker.
 WhatsApp necesita una exposición anónima temporal separada, expresamente autorizada,
@@ -102,7 +135,8 @@ no-store/noindex no borran cachés de terceros. Observability apagado no garanti
 de registros de infraestructura. Logs propios solo resultado, status y duración.
 
 ## Pendientes
-Revisión jurídica; visibilidad anónima y bloqueos bilaterales; 23 marcadores jurídicos;
+Actualización jurídica de lanzamiento según LEG-DEV-01 (LEG-SL-01 a LEG-SL-06 en PENDING);
+visibilidad anónima y bloqueos bilaterales; 23 marcadores jurídicos;
 logs automáticos de URLs/tokens; cachés WhatsApp; www/apex; analytics existente;
 fase D móvil y PROD. Aprobación técnica no constituye aprobación jurídica.
 
