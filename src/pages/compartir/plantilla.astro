@@ -1,0 +1,61 @@
+---
+import { site } from '../../config/site';
+import '../../styles/tokens.css';
+---
+<!doctype html>
+<html lang={site.locale}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Este enlace no está disponible | {site.brand}</title>
+    <meta name="description" content="Puedes conocer más de RLVO en nuestro sitio." />
+    <meta name="robots" content="noindex, nofollow, noarchive" />
+    <link rel="canonical" href={new URL('/compartir/plantilla', site.url)} />
+    <link rel="icon" href={site.brandAssets.favicon} />
+    <meta property="og:title" content="Este enlace no está disponible" />
+    <meta property="og:description" content="Puedes conocer más de RLVO en nuestro sitio." />
+    <meta property="og:image" content={new URL(site.seo.image, site.url)} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={site.seo.imageAlt} />
+    <meta property="og:url" content={new URL('/compartir/plantilla', site.url)} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.brand} />
+    <meta property="og:locale" content={site.ogLocale} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Este enlace no está disponible" />
+    <meta name="twitter:description" content="Puedes conocer más de RLVO en nuestro sitio." />
+    <meta name="twitter:image" content={new URL(site.seo.image, site.url)} />
+  </head>
+  <body data-share-links-template="v1">
+    <main>
+      <img class="logo" src={site.brandAssets.logo} alt={site.brand} width="160" height="52" />
+      <p class="eyebrow">Un enlace de nuestra comunidad</p>
+      <h1>Este enlace no está disponible</h1>
+      <p id="share-price" class="price"></p>
+      <p id="share-description">Puedes conocer más de RLVO en nuestro sitio.</p>
+      <div class="closing">
+        <p>La app de {site.brand}: <strong>{site.launch.label}</strong></p>
+        <a id="rlvo-home" href={site.url}>Conoce {site.brand}<span aria-hidden="true"> ↗</span></a>
+      </div>
+    </main>
+  </body>
+</html>
+<style>
+  @font-face { font-family: 'Inter Variable'; font-style: normal; font-weight: 400 600; font-display: swap; src: url('@fontsource-variable/inter/files/inter-latin-wght-normal.woff2') format('woff2'); }
+  @font-face { font-family: 'Fraunces Variable'; font-style: normal; font-weight: 400 600; font-display: swap; src: url('@fontsource-variable/fraunces/files/fraunces-latin-wght-normal.woff2') format('woff2'); }
+  html { font-family: var(--body); background: var(--surface-page); color: var(--text-primary); }
+  body { margin: 0; min-height: 100svh; display: grid; place-items: center; }
+  main { box-sizing: border-box; width: min(100%, 48rem); padding: clamp(1.5rem, 6vw, 4rem); }
+  .logo { display: block; object-fit: contain; object-position: left; margin-bottom: 3rem; }
+  .eyebrow { font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; color: var(--text-secondary); }
+  h1 { font-family: var(--display); font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.12; font-weight: 500; overflow-wrap: anywhere; margin: 1rem 0; }
+  p { line-height: 1.65; overflow-wrap: anywhere; }
+  .price { font-weight: 600; font-size: 1.5rem; margin: 1.5rem 0 .5rem; }
+  .price:empty { display: none; }
+  #share-description { color: var(--text-secondary); max-width: 38rem; }
+  .closing { border-top: 1px solid var(--border-subtle); margin-top: 3rem; padding-top: 1.25rem; }
+  a { display: inline-flex; min-height: 44px; align-items: center; color: var(--link); font-weight: 600; text-underline-offset: .25em; }
+  a:hover { color: var(--link-hover); }
+  a:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 5px; border-radius: 8px; }
+</style>

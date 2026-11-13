@@ -29,7 +29,12 @@
     "qa:full": "node scripts/qa/run.mjs full",
     "qa:lighthouse": "node scripts/qa/run.mjs lighthouse",
     "qa:report": "node scripts/qa/report.mjs",
-    "test:qa": "node --test tests/qa-evidence.test.mjs tests/qa-process.test.mjs"
+    "test:qa": "node --test tests/qa-evidence.test.mjs tests/qa-process.test.mjs",
+    "check:worker": "tsc -p worker/tsconfig.json",
+    "test:share-links": "node --experimental-strip-types --test --test-concurrency=1 tests/share-links/*.test.mjs",
+    "test:share-links:visual": "node tests/share-links/visual.mjs",
+    "dev:share-links": "wrangler dev --config wrangler.share-links.jsonc --local --ip 127.0.0.1",
+    "ci:share-links": "npm run ci:web && npm run check:worker && npm run test:share-links"
   },
   "dependencies": {
     "@astrojs/markdown-satteri": "0.4.2",
@@ -47,6 +52,7 @@
     "lighthouse": "13.6.0",
     "sharp": "^0.35.5",
     "typescript": "^6.0.3",
+    "wrangler": "4.160.1",
     "yaml": "2.9.1"
   }
 }

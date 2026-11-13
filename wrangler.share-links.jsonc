@@ -1,0 +1,23 @@
+{
+  // Explicit opt-in configuration for the SAME intended Static Assets deployment.
+  // The normal wrangler.jsonc remains unchanged and contains no Worker entry point.
+  "name": "rlvo-public-web",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-09-29",
+  "workers_dev": false,
+  "preview_urls": false,
+  "observability": { "enabled": false },
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "404-page",
+    "html_handling": "drop-trailing-slash",
+    "run_worker_first": ["/p", "/p/*", "/u", "/u/*", "/%70", "/%70/*", "/%75", "/%75/*"]
+  },
+  "vars": {
+    "SHARE_LINKS_ENABLED": "false",
+    "SHARE_LINKS_ENV": "local",
+    "SHARE_LINKS_PUBLIC_ORIGIN": "",
+    "SHARE_PREVIEW_URL": ""
+  }
+}
