@@ -30,7 +30,12 @@ for (const [file, html] of pages) {
     /\ssrc="https:\/\/static\.cloudflareinsights\.com\/beacon\.min\.js"/.test(script),
   );
   beaconCount += beaconScripts.length;
-  if (scripts.length !== 1 || beaconScripts.length !== 1) {
+  if (file === 'compartir/plantilla.html') {
+    if (scripts.length !== 0 || !html.includes('data-share-links-template="v1"') ||
+        !html.includes('content="noindex, nofollow, noarchive"')) {
+      fail('La única plantilla Share Links debe ser noindex y no contener scripts');
+    }
+  } else if (scripts.length !== 1 || beaconScripts.length !== 1) {
     fail('Se requiere exactamente el script oficial de Cloudflare Web Analytics');
   } else {
     const beaconAttributes = beaconScripts[0].match(/\sdata-cf-beacon=/g) ?? [];

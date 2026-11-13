@@ -22,3 +22,7 @@
 
 /legal/manifest.json
   Content-Type: application/json; charset=utf-8
+
+/compartir/plantilla
+  X-Robots-Tag: noindex, nofollow, noarchive
+  Cache-Control: no-store
