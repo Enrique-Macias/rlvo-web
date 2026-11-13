@@ -12,8 +12,9 @@ export const headers = () => new Headers({
 });
 
 
-export async function render(env: Env, status: number, origin: string, path: string,
-  preview?: Preview, head = false): Promise<Response> {
+export async function render(env: Env, status: number, origin: string | null, path: string,
+  preview?: Preview, head = false, home?: string): Promise<Response> {
+  if (!origin) return generic(status === 200 ? 503 : status, head);
   let title = status === 503 ? 'Intenta de nuevo más tarde' :
     status === 405 ? 'Método no permitido' : 'Este enlace no está disponible';
   let description = status === 503 ? 'No pudimos consultar este enlace. Intenta de nuevo más tarde.' :
@@ -60,9 +61,13 @@ export async function render(env: Env, status: number, origin: string, path: str
   attribute('meta[name="twitter:description"]', 'content', description);
   attribute('meta[name="twitter:image"]', 'content', new URL(site.seo.image, origin).href);
   attribute('link[rel="canonical"]', 'href', url);
-  attribute('#rlvo-home', 'href', new URL('/', origin).href);
+  attribute('#rlvo-home', 'href', home ?? new URL('/', origin).href);
   return rewriter.transform(new Response(html, { status, headers: h }));
 }
-export function emergency(head: boolean): Response {
-  return new Response(head ? null : '<!doctype html><html lang="es-MX"><meta charset="utf-8"><meta name="robots" content="noindex, nofollow, noarchive"><title>Intenta de nuevo más tarde | RLVO</title><h1>Intenta de nuevo más tarde</h1></html>', { status: 503, headers: headers() });
+export function generic(status: number, head = false): Response {
+  const title = status === 503 ? 'Intenta de nuevo más tarde' : status === 405 ? 'Método no permitido' : 'Este enlace no está disponible';
+  const h = headers();
+  if (status === 405) h.set('Allow', 'GET, HEAD');
+  return new Response(head ? null : '<!doctype html><html lang="es-MX"><meta charset="utf-8"><meta name="robots" content="noindex, nofollow, noarchive"><title>' + title + ' | RLVO</title><h1>' + title + '</h1></html>', {status, headers:h});
 }
+export function emergency(head: boolean): Response { return generic(503, head); }
