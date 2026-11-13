@@ -1,0 +1,23 @@
+{
+  "name": "rlvo-share-links-staging",
+  "main": "worker/staging.ts",
+  "compatibility_date": "2026-09-29",
+  "workers_dev": false,
+  "preview_urls": false,
+  "observability": {
+    "enabled": false
+  },
+  "assets": {
+    "directory": "./.wrangler/share-links-staging-assets",
+    "binding": "ASSETS",
+    "not_found_handling": "none",
+    "html_handling": "drop-trailing-slash",
+    "run_worker_first": true
+  },
+  "vars": {
+    "SHARE_LINKS_ENABLED": "false",
+    "SHARE_LINKS_ENV": "staging",
+    "SHARE_LINKS_PUBLIC_ORIGIN": "https://rlvo-share-links-staging.enriquemaciaslpz.workers.dev",
+    "SHARE_PREVIEW_URL": ""
+  }
+}
