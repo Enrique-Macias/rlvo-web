@@ -4,7 +4,8 @@
 Base web 77c60d349c1c81919a857783c7f942a57f808390 (árbol W1 24df02119dd459b7da7ade900022450f449cc816).
 Worker previsto: rlvo-share-links-staging. Origen previsto aprobado:
 https://rlvo-share-links-staging.enriquemaciaslpz.workers.dev.
-No se afirma que exista, esté asignado ni sea accesible. No se ha creado ni desplegado.
+La implementación local histórica no creó recursos. El estado alojado posterior se
+registra en «W2-A1 y controles locales de activación privada»; no implica activación de Supabase.
 Producción rlvo-public-web, sus dominios, wrangler.jsonc y wrangler.share-links.jsonc permanecen intactos.
 
 ## Entradas y política
@@ -245,3 +246,168 @@ tests/share-links/staging-runtime.test.mjs, tests/share-links/staging-visual.mjs
 15 archivos en total: 3 modificados y 12 nuevos. Ninguna dependencia ni control crítico cambió.
 Clasificación aplicada al diff de trabajo y nuevos archivos desde ci/control-policy.json de la base;
 no se crearon commits sintéticos para invocar inspectControls sobre cambios sin commit.
+
+
+## W2-A1 y controles locales de activación privada
+W2-D1 creó manualmente rlvo-share-links-staging: versión
+7dea9d51-1fcf-47c2-b342-95935d030ea5, deployment
+65d6f98f-d442-467c-8368-533bb23f3d13. El propietario habilitó después workers.dev
+bajo Access; previews siguen apagadas, sin routes ni custom domains. La integración
+sigue false, endpoint vacío y sin Secrets de aplicación. No se ha demostrado conexión
+Worker → Supabase. Estas son evidencias anteriores, no un inventario en tiempo real.
+
+W2-A1 quedó verificado con tres fuentes diferenciadas:
+- Propietario: capturas/confirmación de Zero Trust Free, All traffic sobre este Worker,
+  política Cloudflare account members — Allow, sesión de 24 horas y acceso autenticado
+  que devuelve la vista deshabilitada. No es una allowlist individual de correo.
+- HTTP anónimo: 16 solicitudes GET/HEAD de raíz, p/u sintéticos, OG, logo, plantilla y
+  paths codificados respondieron 302 hacia yellow-mountain-069e.cloudflareaccess.com,
+  sin seguir redirects, enviar credenciales ni recibir contenido protegido.
+- API: cuenta con huella 36da4df1ff8cc468, subdominio esperado, un único miembro aceptado
+  correspondiente al propietario, ingreso principal habilitado y previews deshabilitadas.
+  La lista clásica de aplicaciones Access devolvió vacía: no demuestra ausencia de la
+  protección Workers ni constituye inventario exhaustivo de políticas. Antes hubo 403;
+  no se ampliaron permisos. La confirmación de política procede del propietario.
+
+Añadir miembros a esa cuenta puede ampliar quién accede. Cualquier miembro adicional,
+política más específica, bypass o alcance distinto exige detenerse antes de conectar
+Supabase y revisar la autorización. Access introduce su propia autenticación/cookies;
+no son cookies del Worker. No extraer cookies, JWT, OTP ni sesiones del navegador.
+
+### Configuración separada, sin publicar el endpoint
+wrangler.share-links.staging.private.template.jsonc conserva el destino STAGING y
+contiene un marcador, nunca un endpoint o credencial real. No es un archivo desplegable
+aprobado: el marcador no supera el pin del Worker. El preparador lee exclusivamente un
+objeto JSON con la clave endpoint desde stdin (UTF-8, máximo 2048 bytes); no lee variables
+de entorno, argumentos de endpoint, archivos de claves ni el backend por red.
+Reutiliza endpointMatches y STAGING_ENDPOINT_SHA256 del módulo puro ya integrado.
+Solo acepta la representación canónica HTTPS exacta fijada por ese pin, sin redirects
+permitidos, credenciales, puertos explícitos, query, fragmento ni variantes ambiguas.
+No hace fetch ni verifica redirects mediante llamadas reales; el cliente conserva redirect:manual.
+
+La salida determinista .wrangler/share-links-staging-private/wrangler.jsonc está ignorada
+por Git y se crea con permisos 600. El main y assets.directory se resuelven respecto de
+ese archivo generado: ../../worker/staging.ts y ../share-links-staging-assets. No se
+copia el endpoint a Git/documentación/logs. No hay account_id, claves ni configuración PROD.
+
+Comandos locales, desde la raíz del worktree, Node 22.21.1:
+```sh
+node --experimental-strip-types scripts/share-links/prepare-staging-private-config.mjs
+node --experimental-strip-types scripts/share-links/check-staging-private-target.mjs
+node scripts/share-links/check-staging-target.mjs
+```
+El primer comando recibe por stdin JSON preparado de forma segura con el endpoint
+previamente contrastado con la fuente STAGING autorizada; no pegarlo como argumento ni
+incluir credenciales. Aquí no se prescribe una CLI emisora inexistente ni una variable
+sin validar. La entrada se valida antes de crear la salida. El ejemplo no ejecuta deploy.
+
+El guard privado relee plantilla y configuración canónica, rechaza symlinks, archivos
+locales .env/.dev.vars y redirecciones de configuración Wrangler, argumentos/overrides y
+selectores CF_/CLOUDFLARE_/WRANGLER_/SHARE_LINKS_/SHARE_PREVIEW_. Solo permite las dos
+opciones de desactivar telemetría en false. Exige la estructura exacta del modo privado,
+ASSETS con inventario y ocho SHA-256 W2-F1, Worker-first y ausencia de bindings extra,
+routes, custom domains, triggers, entornos, Secrets literales y cambios de runtime.
+La configuración cerrada original y su guard permanecen intactos y los modos se rechazan
+mutuamente. Los factories puros con pin sintético solo sirven a tests de módulo; ningún
+argumento, binding o variable del CLI puede seleccionar otro pin.
+
+### Dos puertas diferentes antes de cualquier deployment futuro
+**A — local:** preparar y auditar assets, materializar desde la plantilla, ejecutar el
+guard privado y verificar integridad de la base/CI/árbol revisado. Su salida es LOCAL_ONLY,
+REQUIRED_NOT_PERFORMED para la verificación alojada y deploymentAuthorized:false. No es
+una aprobación de infraestructura ni prueba de Access, cuenta, membresía o credencial.
+No se añade un wrapper de deployment, flag de bypass o autorización automática.
+
+**B — alojada, obligatoria y reciente:** bajo una autorización posterior, confirmar con
+Wrangler fijado y lecturas API la cuenta efectiva (huella indicada), nombre, versión,
+variables iniciales, Secret por metadata, workers.dev, previews, rutas, dominios y el
+estado inicial de producción. Verificar Access All traffic para este recurso, política
+aprobada, membresía sin identidades adicionales y ausencia de bypass/políticas que amplíen
+acceso. Cuando la API no exponga completamente la protección Workers o devuelva 403,
+obtener evidencia actual del propietario sin ampliar OAuth ni crear tokens.
+Repetir GET/HEAD anónimos de todas las superficies, sin redirects, y la prueba autenticada
+oficial del propietario. Un PASS local o un documento de evidencia antiguo no satisface B.
+Si no puede acreditarse B, no configurar Secret ni desplegar. El guard operativo no impide
+que un operador ejecute por su cuenta comandos fuera de este procedimiento.
+
+### Orden futuro de Secret y activación (requiere autorización alojada)
+1. Completar A y B; integración todavía false y endpoint vacío. Reconfirmar producción.
+2. Validar la copia STAGING de la clave (dueño, 600, formato como datos, nunca source shell).
+   No recuperarla ni rotarla en Supabase. Transportar solo la CURRENT mediante memoria/stdin,
+   con tracing apagado, al comando fijo, nunca en argumentos, archivos del repo o logs:
+   `./node_modules/.bin/wrangler secret put SHARE_PREVIEW_KEY_CURRENT --config wrangler.share-links.staging.jsonc`
+3. secret put de Wrangler 4.160.1 envía una escritura de Secret al recurso existente; crea
+   una nueva versión y la despliega inmediatamente. Registrar sus IDs y comprobar en API
+   el estado efectivo, integración apagada, endpoint vacío y Access/ingreso/previews, y repetir
+   pruebas anónimas. No asumir que el archivo local describe lo que ocurrió en servidor.
+4. Repetir A y B inmediatamente antes de la única activación autorizada. Solo entonces:
+   `./node_modules/.bin/wrangler deploy --config .wrangler/share-links-staging-private/wrangler.jsonc`
+   Sin name/env/var/route/keep-vars ni otros overrides. Nunca desplegar la plantilla ni PROD.
+   Wrangler aplica workers.dev y preview URLs como parte de triggers, no de forma atómica
+   con la carga. Registrar versión/deployment y comprobar Access otra vez por API/evidencia
+   del propietario y HTTP anónimo. No asumir que un deploy conserva toda configuración Access.
+5. El código fijado de Wrangler 4.160.1 usa keepSecrets:true al desplegar. Aun así, confirmar
+   exclusivamente metadata del binding y no asumir que una configuración cerrada borra la
+   clave o que esta existe por aparecer en un inventario previo. Nunca imprimir su valor.
+6. Verificar endpoint/pin, true/staging, origen exacto, ASSETS, sin rutas/domains/previews,
+   Observability apagado, cuenta y producción intactas. Pruebas autenticadas del propietario
+   solo con p/u sintéticos inexistentes; no crear fixtures ni reutilizar enlaces S3-D.
+   Un 404 puede proceder de integración apagada o del backend: por sí solo no demuestra
+   conexión. Acreditar flujo activo y estado/contrato disponibles mediante evidencia segura;
+   si es insuficiente, reportar límite sin inventar éxito ni habilitar logs/Observability.
+
+### Mitigación y retorno explícito a apagado
+Ante exposición, pérdida de Access o resultado ambiguo: detenerse y consultar estado.
+**Primero cerrar ingreso:** deshabilitar únicamente workers.dev del Worker STAGING mediante
+el mecanismo oficial autorizado y mantener previews false; comprobar configuración efectiva.
+No tocar rutas/domains de producción ni borrar Worker, aplicaciones Access o claves backend.
+**Después desactivar integración:** bajo el alcance de rollback aprobado, ejecutar el guard
+cerrado y desplegar exclusivamente wrangler.share-links.staging.jsonc; verificar false,
+endpoint vacío, workers.dev/previews false, rutas/domains vacíos, Access y producción.
+No repetir un deploy ambiguo ni asumir atomicidad. Al ser dos pasos puede haber un estado
+intermedio con integración activa pero ingreso cerrado; comprobarlo y reportarlo.
+**Secret por separado:** el deploy cerrado no es una orden de borrado de Secret. Inventariar
+su nombre sin valor; eliminación/rotación requiere autorización específica. Si otra operación
+puede afectar recursos no previstos, detenerse tras cerrar ingreso. No modificar producción.
+
+### Alcance de esta implementación S1-I1
+Solo controles locales: no lee la clave real, no configura Secrets, no llama a Supabase,
+no cambia Access/miembros/hostnames ni despliega. LEG-SL-01 a LEG-SL-06 siguen PENDING bajo
+LEG-DEV-01; no se otorga aprobación jurídica de lanzamiento. W2-Q1, fixtures sintéticos,
+WhatsApp público, fase D móvil y PROD permanecen pendientes de autorización separada.
+
+### Validación local S1-I1
+CI 216/216, integridad/contrato legal 44/44, QA 93/93 y Share Links final 498/498
+(375 existentes + 123 nuevas): 851 pruebas distintas, sin sumar repeticiones; cero fallos,
+omisiones, cancelaciones o pendientes. Se conservan las 106 regresiones F1. El pipeline
+ci:share-links completó sus etapas base y una primera corrida Share Links de 493; después
+de las últimas cinco regresiones se repitieron Share Links completo (498), Astro check y
+typecheck sobre los bytes finales. Astro: 105 archivos, cero errores, warnings o hints.
+El primer check detectó un import de prueba sin uso; se utilizó en la comprobación positiva
+y el check final quedó limpio. No se modificaron reglas ni auditorías para resolverlo.
+
+Builds producción/preview, auditorías estática/marca/legal y HTTP local de ambos PASS.
+Visuales: ocho W1 + ocho STAGING a 360/390/768/1280, teclado/foco/axe/DOM XSS, sin cookies,
+errores CSP o solicitudes externas inesperadas. No son pruebas de WhatsApp ni certificación
+WCAG. El deadline/cancelación conserva el límite de Miniflare documentado anteriormente.
+
+Las pruebas nuevas usan destinos/pins sintéticos en el factory puro; verifican el CLI
+sellado, stdin acotado, normalización real de Wrangler con red bloqueada, rechazo cruzado
+de modos, inventario y hashes, selectors/overrides, dotenv, JSON ambiguo, symlinks incluso
+colgantes y hardlinks de salida. La escritura no sigue symlinks y restaura permisos 600.
+La configuración sellada también se materializó con el endpoint documental validado solo
+en memoria/stdin, sin red ni credenciales: guard privado LOCAL_ONLY PASS y guard cerrado PASS.
+Ocho assets, 107948 bytes y todos los SHA-256 W2-F1 intactos.
+
+El inspector confiable de la base se ejecutó en un repositorio temporal de validación
+sobre el árbol proyectado, con contexto de PR sintético para diagnóstico, sin crear un PR
+ni una autorización: cero cambios críticos y jurídicos. Los archivos base ajenos a este
+documento, incluida la colección protegida, permanecen iguales. Las 13 entradas vigiladas
+conservan bytes y metadata; cero releases, 23 marcadores y punteros null. No cambian runtime,
+dependencias, workflows, política CI ni configuraciones cerrada, W1 o producción.
+
+Son resultados locales, no nuevas ejecuciones GitHub Actions. La lectura API final de esta
+fase confirmó la versión/deployment D1 de STAGING y su estado apagado con endpoint vacío,
+sin binding Secret; workers.dev habilitado por el propietario y previews false. Producción
+conserva su versión/deployment. No se realizaron escrituras alojadas ni lecturas de la clave.
+La evidencia detallada, logs/capturas y configuración generada quedan ignorados fuera del commit.
