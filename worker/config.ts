@@ -3,6 +3,10 @@ export const TOKEN = /^[A-Za-z0-9_-]{22}$/;
 export const TIMEOUT_MS = 6_000;
 export const MAX_RESPONSE_BYTES = 4_096;
 export interface Env {
+  IMAGES?: import('./og-compose.ts').ImagesBinding;
+  SHARE_OG_ENABLED?: string;
+  SHARE_OG_SOURCE_URL?: string;
+  SHARE_OG_KEY_CURRENT?: string;
   ASSETS: { fetch(request: Request): Promise<Response> };
   SHARE_LINKS_ENABLED?: string;
   SHARE_LINKS_ENV?: string;
