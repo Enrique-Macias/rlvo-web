@@ -1,7 +1,7 @@
 import { isSharePath, shareRoute, type Env, type ConfigState } from './config.ts';
 import { loadPreview } from './share-preview.ts';
 import { emergency, render } from './render.ts';
-import { readOgConfig, isOgAttempt } from './og-config.ts';
+import { readOgConfig, isOgAttempt, type OgState } from './og-config.ts';
 import { createOgHandler, ogResponse } from './og-handler.ts';
 import { loadOgRev } from './og-source.ts';
 
@@ -11,10 +11,14 @@ export interface SharePolicy {
   home?: string;
   /** Module-only opt-in. Never populated from headers, query strings or environment bindings. */
   ogLocalTesting?: true;
+  /** Trusted module hook for a bounded synthetic STAGING session; never read from bindings. */
+  readOgConfig?: (env: Env, preview: import('./config.ts').Config, request: Request) => OgState;
 }
 /** Policy is supplied by trusted module code, never by runtime bindings or visitors. */
 export function createShareHandler(policy: SharePolicy) {
   const image = createOgHandler();
+  const readOg = policy.readOgConfig ?? ((env: Env, preview: import('./config.ts').Config, request: Request) =>
+    readOgConfig(env, preview, request, policy.ogLocalTesting === true));
   return async (request: Request, env: Env): Promise<Response> => {
     const path = new URL(request.url).pathname;
     if (!isSharePath(path)) return env.ASSETS.fetch(request);
@@ -27,11 +31,11 @@ export function createShareHandler(policy: SharePolicy) {
       if (request.method !== 'GET' && request.method !== 'HEAD') status = 405;
       else {
         const route = shareRoute(path);
-        if (!route && policy.ogLocalTesting === true && env.SHARE_OG_ENABLED !== undefined && env.SHARE_OG_ENABLED !== 'false' && isOgAttempt(path)) {
+        if (!route && (policy.ogLocalTesting === true || policy.readOgConfig !== undefined) && env.SHARE_OG_ENABLED !== undefined && env.SHARE_OG_ENABLED !== 'false' && isOgAttempt(path)) {
           const config = await policy.readConfig(env);
           if (config.state === 'disabled') return ogResponse(status = 404);
           if (config.state !== 'active') return ogResponse(status = 503);
-          const og = readOgConfig(env, config.config, request, policy.ogLocalTesting === true);
+          const og = readOg(env, config.config, request);
           if (og.state !== 'active') return ogResponse(status = 503);
           const response = await image(request, env, og.config); status = response.status; return response;
         }
@@ -44,7 +48,7 @@ export function createShareHandler(policy: SharePolicy) {
             preview = await loadPreview(config.config, route.tipo, route.token);
             status = preview === null ? 503 : preview.disponible ? 200 : 404;
             if (route.tipo === 'p' && preview?.disponible) {
-              const og = readOgConfig(env, config.config, request, policy.ogLocalTesting === true);
+              const og = readOg(env, config.config, request);
               if (og.state === 'invalid') { status = 503; return emergency(request.method === 'HEAD'); }
               if (og.state === 'active') {
                 const result = await loadOgRev(og.config, route.token, fetch, Math.max(0, 6000 - (Date.now() - start)));
