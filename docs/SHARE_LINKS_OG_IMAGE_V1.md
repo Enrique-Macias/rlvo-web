@@ -3,6 +3,8 @@
 Estado: **LIMITED**. Implementación y pruebas locales; fotografías públicas no activadas.
 Base verificada: `fb7c06a8e89cb46445b9347a4b977dc16c769f0e`, Share Links V1 y harness W2-Q2.
 Rama: `feature/share-links-og-image-v1`. Consolidación local OG-06B, sin despliegue.
+Validación STAGING sintética posterior (PASS, OG de vuelta en OFF) y configuración privada
+de STAGING: ver `docs/SHARE_LINKS_OG_STAGING_INTEGRATION.md`. Sigue sin aprobación para PROD.
 
 ## Contrato consumido
 
