@@ -1,0 +1,25 @@
+{
+  // Local-only opt-in. Not a deployment configuration; no real endpoints or keys.
+  "name": "rlvo-og-local-only",
+  "main": "worker/og-local.ts",
+  "compatibility_date": "2026-09-29",
+  "workers_dev": false,
+  "preview_urls": false,
+  "observability": { "enabled": false },
+  "images": { "binding": "IMAGES", "remote": false },
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "404-page",
+    "html_handling": "drop-trailing-slash",
+    "run_worker_first": ["/p", "/p/*", "/u", "/u/*", "/%70", "/%70/*", "/%75", "/%75/*"]
+  },
+  "vars": {
+    "SHARE_LINKS_ENABLED": "false",
+    "SHARE_LINKS_ENV": "local",
+    "SHARE_LINKS_PUBLIC_ORIGIN": "",
+    "SHARE_PREVIEW_URL": "",
+    "SHARE_OG_ENABLED": "false",
+    "SHARE_OG_SOURCE_URL": ""
+  }
+}

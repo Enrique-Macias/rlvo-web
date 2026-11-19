@@ -13,7 +13,7 @@ export const headers = () => new Headers({
 
 
 export async function render(env: Env, status: number, origin: string | null, path: string,
-  preview?: Preview, head = false, home?: string): Promise<Response> {
+  preview?: Preview, head = false, home?: string, imagePath?: string): Promise<Response> {
   if (!origin) return generic(status === 200 ? 503 : status, head);
   let title = status === 503 ? 'Intenta de nuevo más tarde' :
     status === 405 ? 'Método no permitido' : 'Este enlace no está disponible';
@@ -56,10 +56,11 @@ export async function render(env: Env, status: number, origin: string | null, pa
   attribute('meta[property="og:title"]', 'content', title);
   attribute('meta[property="og:description"]', 'content', description);
   attribute('meta[property="og:url"]', 'content', url);
-  attribute('meta[property="og:image"]', 'content', new URL(site.seo.image, origin).href);
+  attribute('meta[property="og:image"]', 'content', new URL(imagePath ?? site.seo.image, origin).href);
+  if (imagePath) attribute('meta[property="og:image:alt"]', 'content', 'Fotografía de la publicación compartida en ' + site.brand + '.');
   attribute('meta[name="twitter:title"]', 'content', title);
   attribute('meta[name="twitter:description"]', 'content', description);
-  attribute('meta[name="twitter:image"]', 'content', new URL(site.seo.image, origin).href);
+  attribute('meta[name="twitter:image"]', 'content', new URL(imagePath ?? site.seo.image, origin).href);
   attribute('link[rel="canonical"]', 'href', url);
   attribute('#rlvo-home', 'href', home ?? new URL('/', origin).href);
   return rewriter.transform(new Response(html, { status, headers: h }));
