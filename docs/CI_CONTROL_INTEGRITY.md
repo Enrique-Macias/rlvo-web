@@ -72,6 +72,10 @@ Directorios críticos completos, incluyendo cualquier entrada nueva y descendien
 - `.github/` (workflows, CODEOWNERS y acciones locales).
 - `scripts/ci/` (incluye el checker y módulos futuros).
 - `src/legal/` (implementación jurídica, no autorización editorial).
+- PL-085 6E-R1 (pendiente de PR autorizado): `worker/` (código del Worker, manifiesto
+  STAGING y distintivo), `scripts/share-links/` (verificadores del contrato y herramientas
+  de operador), `tests/share-links/` (suites Share Links/OG y controles de configuración)
+  y `src/pages/compartir/` (plantilla HTML que el Worker reescribe).
 
 Archivos críticos exactos:
 
@@ -86,6 +90,16 @@ Archivos críticos exactos:
 
 Prefijos de archivo críticos: `tests/ci-` y `tests/legal-`; protegen también nuevos
 tests con esos prefijos. No se interpretan como expresiones regulares o glob.
+PL-085 6E-R1 añade el prefijo `wrangler`: cualquier configuración Wrangler en la raíz,
+existente o nueva (`wrangler.jsonc`, `wrangler.share-links.*`, `wrangler.toml`).
+
+La ampliación 6E-R1 solo agrega rutas: no retira entradas ni toca el piso jurídico
+(`tests/ci-worker-gates.test.mjs` lo comprueba). Como la cobertura se lee de la política
+de la **base**, solo rige para los PR posteriores a su incorporación a `main`; el PR que
+la introduce queda evaluado con la política anterior y, por modificar `ci/`, `.github/`,
+`scripts/ci/`, `tests/ci-*`, `package.json` y este documento, requiere autorización externa.
+Desde entonces, un PR que cambie a la vez código del Worker, sus tests y su configuración
+incluye todos esos cambios en el mismo digest y no puede fusionarse sin autorización.
 
 Inputs que **nunca admiten excepción de CI**:
 
