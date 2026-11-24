@@ -275,11 +275,25 @@ for (const path of policy.criticalFiles) test(`cobertura de archivo declarado: $
   const head = changed(path, bytes);
   assert.throws(() => verifyControls({ ...context(head), now }), errorCode('CI_AUTH_REQUIRED'));
 });
-for (const path of ['src/legal/added.ts', 'scripts/ci/nested/added.mjs', '.github/actions/added/action.yml', 'tests/legal-added.test.ts']) {
+for (const path of ['src/legal/added.ts', 'scripts/ci/nested/added.mjs', '.github/actions/added/action.yml', 'tests/legal-added.test.ts',
+  // PL-085 6E-R1: Worker, Wrangler, suites/scripts Share Links y plantilla HTML del Worker.
+  'worker/og-handler.ts', 'worker/added.ts', 'wrangler.jsonc', 'wrangler.share-links.og.staging.jsonc', 'wrangler.toml',
+  'scripts/share-links/test-og-negative.mjs', 'tests/share-links/og-core.test.mjs', 'tests/share-links/added.test.mjs',
+  'src/pages/compartir/plantilla.astro']) {
   test(`cobertura de directorio/prefijo reservado: ${path}`, () => {
     assert.throws(() => verifyControls({ ...context(changed(path, 'Fixture\n')), now }), errorCode('CI_AUTH_REQUIRED'));
   });
 }
+test('PL-085: código, test y configuración del Worker cambiados a la vez quedan todos en el digest', () => {
+  const head = makeCommit({ 'worker/og-handler.ts': 'Fixture\n', 'tests/share-links/og-core.test.mjs': 'Fixture\n',
+    'wrangler.share-links.og.staging.jsonc': '{"vars":{"SHARE_OG_ENABLED":"true"}}\n', 'src/pages/index.astro': '<h1>Otro</h1>\n' }, base);
+  assert.deepEqual(inspectControls(context(head)).changes.map(change => change.path),
+    ['tests/share-links/og-core.test.mjs', 'worker/og-handler.ts', 'wrangler.share-links.og.staging.jsonc']);
+  assert.throws(() => verifyControls({ ...context(head), now }), errorCode('CI_AUTH_REQUIRED'));
+  assert.equal(verifyControls({ ...context(head), now, authorization: authorization(head) }).controlIntegrity, 'authorized');
+  // Fuera de los scopes declarados no se exige autorización (contenido público normal).
+  assert.equal(verifyControls({ ...context(changed('docs/SHARE_LINKS_OG_PHASE_6E.md', 'Fixture\n')), now }).controlIntegrity, 'unchanged');
+});
 test('revocación y recuperación: nuevo SHA necesita autorización nueva o revertir cambios críticos', () => {
   const oldAuth = authorization(criticalHead);
   assert.equal(verifyControls({ ...context(criticalHead), now, authorization: oldAuth }).controlIntegrity, 'authorized');

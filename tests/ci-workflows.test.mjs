@@ -126,5 +126,9 @@ test('web-quality no puede recibir Secrets ni el transporte de autorización', (
 });
 test('CODEOWNERS protege todos los workflows y el propio archivo; aún requiere configuración remota', () => {
   const codeowners = readFileSync('.github/CODEOWNERS', 'utf8');
-  for (const path of ['/.github/', '/scripts/ci/', '/legal/', '/src/content/legal/']) assert(codeowners.includes(`${path} @Enrique-Macias`));
+  for (const path of ['/.github/', '/scripts/ci/', '/legal/', '/src/content/legal/',
+    '/ci/', '/worker/', '/wrangler*', '/scripts/share-links/', '/tests/share-links/', '/src/pages/compartir/']) assert(codeowners.includes(`${path} @Enrique-Macias`));
+  // Un único propietario existente: no se introducen propietarios nuevos.
+  const owners = new Set(codeowners.split('\n').filter(l => l.trim() && !l.startsWith('#')).flatMap(l => l.trim().split(/\s+/).slice(1)));
+  assert.deepEqual([...owners], ['@Enrique-Macias']);
 });

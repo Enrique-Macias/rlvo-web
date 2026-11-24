@@ -1,7 +1,8 @@
 {
   "schemaVersion": 1,
   "repository": "Enrique-Macias/rlvo-web",
-  "criticalDirectories": [".github", "scripts/ci", "src/legal"],
+  "criticalDirectories": [".github", "scripts/ci", "src/legal",
+    "worker", "scripts/share-links", "tests/share-links", "src/pages/compartir"],
   "criticalFiles": [
     "ci/control-policy.json",
     "scripts/check-legal-baseline.mjs",
@@ -25,7 +26,7 @@
     ".nvmrc",
     "docs/CI_CONTROL_INTEGRITY.md"
   ],
-  "criticalFilePrefixes": ["tests/ci-", "tests/legal-"],
+  "criticalFilePrefixes": ["tests/ci-", "tests/legal-", "wrangler"],
   "nonAuthorizableDirectories": ["legal", "src/content/legal"],
   "nonAuthorizableFiles": [
     "src/config/legal-current.json",
