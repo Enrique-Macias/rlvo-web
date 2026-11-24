@@ -132,6 +132,12 @@ cambia. La cobertura rige desde que la política esté en `main` (se lee de la b
 que este PR se evalúa con la política anterior y requiere autorización externa por sus
 cambios en rutas ya críticas. CODEOWNERS sigue sin revisión obligatoria (un solo propietario).
 
+6E-R2 añade como archivos críticos los assets OG oficiales `public/og/rlvo-paleta-06.png` y
+`public/brand/11_logo_horizontal_menta_sobre_verde.svg`, con su SHA-256 aprobado fijado en
+`tests/ci-worker-gates.test.mjs`; su contenido no cambió. Laguna conocida: el PNG se regenera
+en cada build desde `public/brand/09_logo_horizontal_blanco_transparente.svg` mediante
+`scripts/prepare-brand.mjs` (crítico); ese SVG fuente no está protegido.
+
 ## 6. Verificación local
 
 ```sh

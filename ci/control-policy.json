@@ -24,7 +24,9 @@
     ".gitmodules",
     ".node-version",
     ".nvmrc",
-    "docs/CI_CONTROL_INTEGRITY.md"
+    "docs/CI_CONTROL_INTEGRITY.md",
+    "public/og/rlvo-paleta-06.png",
+    "public/brand/11_logo_horizontal_menta_sobre_verde.svg"
   ],
   "criticalFilePrefixes": ["tests/ci-", "tests/legal-", "wrangler"],
   "nonAuthorizableDirectories": ["legal", "src/content/legal"],

@@ -294,6 +294,17 @@ test('PL-085: código, test y configuración del Worker cambiados a la vez queda
   // Fuera de los scopes declarados no se exige autorización (contenido público normal).
   assert.equal(verifyControls({ ...context(changed('docs/SHARE_LINKS_OG_PHASE_6E.md', 'Fixture\n')), now }).controlIntegrity, 'unchanged');
 });
+test('PL-085: assets OG, test y configuración cambiados a la vez requieren autorización', () => {
+  const png = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0, 0, 0, 0]);
+  const head = makeCommit({ 'public/og/rlvo-paleta-06.png': png, 'public/brand/11_logo_horizontal_menta_sobre_verde.svg': '<svg/>\n',
+    'tests/share-links/og-contract.test.mjs': 'Fixture\n', 'wrangler.share-links.og.staging.jsonc': '{}\n' }, base);
+  assert.deepEqual(inspectControls(context(head)).changes.map(change => change.path),
+    ['public/brand/11_logo_horizontal_menta_sobre_verde.svg', 'public/og/rlvo-paleta-06.png',
+      'tests/share-links/og-contract.test.mjs', 'wrangler.share-links.og.staging.jsonc']);
+  assert.throws(() => verifyControls({ ...context(head), now }), errorCode('CI_AUTH_REQUIRED'));
+  // Otros assets públicos siguen fuera de alcance.
+  assert.equal(verifyControls({ ...context(changed('public/brand/07_logo_horizontal_verde_transparente.svg', '<svg/>\n')), now }).controlIntegrity, 'unchanged');
+});
 test('revocación y recuperación: nuevo SHA necesita autorización nueva o revertir cambios críticos', () => {
   const oldAuth = authorization(criticalHead);
   assert.equal(verifyControls({ ...context(criticalHead), now, authorization: oldAuth }).controlIntegrity, 'authorized');

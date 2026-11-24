@@ -66,7 +66,10 @@ const V1={criticalDirectories:['.github','scripts/ci','src/legal'],
  nonAuthorizableDirectories:['legal','src/content/legal'],
  nonAuthorizableFiles:['src/config/legal-current.json','docs/PL-016-WEB-INTEGRATION-CONTRACT.md','docs/LEGAL_FACTS.md',
   'src/content/legal.ts','src/pages/eliminar-cuenta.astro','src/config/site.ts']};
-const WORKER_SCOPES={criticalDirectories:['worker','scripts/share-links','tests/share-links','src/pages/compartir'],criticalFilePrefixes:['wrangler']};
+const OG_ASSETS={'public/og/rlvo-paleta-06.png':'43046d631a9a94648220ac8edceae8d4ef4f13baabc8cc9e3e8d838346f34093',
+ 'public/brand/11_logo_horizontal_menta_sobre_verde.svg':'cf2999f665021cdcdc9abfe918c2b45eb2a68851c40c7d8a031613dba777516b'};
+const WORKER_SCOPES={criticalDirectories:['worker','scripts/share-links','tests/share-links','src/pages/compartir'],criticalFilePrefixes:['wrangler'],
+ criticalFiles:Object.keys(OG_ASSETS)};
 const covered=path=>policy.criticalDirectories.some(d=>path===d||path.startsWith(d+'/'))||policy.criticalFiles.includes(path)||
  policy.criticalFilePrefixes.some(p=>path.startsWith(p));
 
@@ -85,5 +88,15 @@ test('6E-R1: todo archivo versionado del Worker, Wrangler y Share Links queda ba
  for(const known of ['worker/og-handler.ts','worker/og-staging-fixtures.json','wrangler.jsonc','wrangler.share-links.og.staging.jsonc',
   'tests/share-links/og-core.test.mjs','scripts/share-links/test-og-negative.mjs','src/pages/compartir/plantilla.astro'])assert(scoped.includes(known),'inventario incompleto: '+known);
  for(const f of [...scoped,'scripts/ci/verify-web.mjs','tests/ci-worker-gates.test.mjs','.github/CODEOWNERS'])assert(covered(f),f);
- for(const f of ['README.md','src/pages/index.astro','docs/SHARE_LINKS_OG_PHASE_6E.md'])assert(!covered(f),'fuera de alcance: '+f);
+ for(const f of ['README.md','src/pages/index.astro','docs/SHARE_LINKS_OG_PHASE_6E.md','public/brand/07_logo_horizontal_verde_transparente.svg'])assert(!covered(f),'fuera de alcance: '+f);
+});
+test('6E-R2: assets OG oficiales protegidos con su contenido aprobado',async()=>{
+ const {createHash}=await import('node:crypto');
+ for(const [path,sha] of Object.entries(OG_ASSETS)){
+  assert(covered(path),path);
+  assert.equal(createHash('sha256').update(readFileSync(path)).digest('hex'),sha,'contenido aprobado: '+path);
+ }
+ // El distintivo embebido declara el mismo SVG fuente; el fallback servido es el PNG protegido.
+ assert(readFileSync('worker/og-badge.ts','utf8').includes('Source SHA-256: '+OG_ASSETS['public/brand/11_logo_horizontal_menta_sobre_verde.svg']));
+ assert(readFileSync('src/config/site.ts','utf8').includes("image: '/og/rlvo-paleta-06.png'"));
 });
