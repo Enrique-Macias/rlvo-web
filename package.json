@@ -34,7 +34,8 @@
     "test:share-links": "node --experimental-strip-types --test --test-concurrency=1 tests/share-links/*.test.mjs",
     "test:share-links:visual": "node tests/share-links/visual.mjs",
     "dev:share-links": "wrangler dev --config wrangler.share-links.jsonc --local --ip 127.0.0.1",
-    "ci:share-links": "npm run ci:web && npm run check:worker && npm run test:share-links"
+    "ci:worker": "node scripts/share-links/prepare-staging-assets.mjs && npm run check:worker && npm run test:share-links && node scripts/share-links/test-og-negative.mjs && node scripts/share-links/test-og-staging-negative.mjs",
+    "ci:share-links": "npm run ci:web"
   },
   "dependencies": {
     "@astrojs/markdown-satteri": "0.4.2",

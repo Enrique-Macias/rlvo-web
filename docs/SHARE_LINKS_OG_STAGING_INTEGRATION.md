@@ -182,9 +182,11 @@ origen OG y el vínculo de proyecto, y los cuatro deben detectarse.
 
 ## CI/CD y deuda
 
-- GitHub CI (`web-quality`, `legal-integrity`) no ejecuta `test:share-links` ni
-  `check:worker`. Hay que correrlos localmente antes de fusionar.
-- Workers Builds de `rlvo-public-web` está desactivado. Su configuración usa
+- Fase 6E (local, pendiente de PR): `web-quality` ejecuta `npm run ci:worker` (typecheck,
+  `test:share-links` y controles negativos OG/STAGING) dentro de `verify-web.mjs`. Ver
+  `docs/SHARE_LINKS_OG_PHASE_6E.md`. Hasta su fusión, correrlos localmente.
+- Workers Builds de `rlvo-public-web` está desactivado. Su configuración remota usa
   `wrangler@latest` sin versión fija y publicaría solo `dist/` mediante `wrangler.jsonc`.
+  El repositorio fija Wrangler 4.160.1; no se modificó la configuración remota.
 - Los despliegues manuales de sesión no pasan por el transporte guardado.
 - Nada en este repositorio activa OG en producción.

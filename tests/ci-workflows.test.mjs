@@ -126,5 +126,11 @@ test('web-quality no puede recibir Secrets ni el transporte de autorización', (
 });
 test('CODEOWNERS protege todos los workflows y el propio archivo; aún requiere configuración remota', () => {
   const codeowners = readFileSync('.github/CODEOWNERS', 'utf8');
-  for (const path of ['/.github/', '/scripts/ci/', '/legal/', '/src/content/legal/']) assert(codeowners.includes(`${path} @Enrique-Macias`));
+  for (const path of ['/.github/', '/scripts/ci/', '/legal/', '/src/content/legal/',
+    '/ci/', '/worker/', '/wrangler*', '/scripts/share-links/', '/tests/share-links/', '/src/pages/compartir/',
+    '/public/og/rlvo-paleta-06.png', '/public/brand/11_logo_horizontal_menta_sobre_verde.svg',
+    '/public/brand/09_logo_horizontal_blanco_transparente.svg']) assert(codeowners.includes(`${path} @Enrique-Macias`));
+  // Un único propietario existente: no se introducen propietarios nuevos.
+  const owners = new Set(codeowners.split('\n').filter(l => l.trim() && !l.startsWith('#')).flatMap(l => l.trim().split(/\s+/).slice(1)));
+  assert.deepEqual([...owners], ['@Enrique-Macias']);
 });

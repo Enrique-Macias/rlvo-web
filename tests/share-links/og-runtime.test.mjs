@@ -10,12 +10,12 @@ import {token,rev,key,cfg,previewCfg,envVars,path,none,unavailable,revision,sour
 const publication={v:1,tipo:'publicacion',disponible:true,titulo:'Libro OG sintético',precio_mxn:321};
 const profile={v:1,tipo:'perfil',disponible:true,nombre_publico:'Perfil sintético'};
 const state={calls:[],preview:publication,og:revision,status:200,rev,corrupt:false};
-const instances=[];let on,off,normal;
+const instances=[];let on,off,normal,absent;
 async function fixture(ogEnabled, {normalEntry=false,overrides={}}={}) {
  const result=await build({entryPoints:[normalEntry?'worker/index.ts':'worker/og-local.ts'],bundle:true,write:false,format:'esm',platform:'browser',target:'es2022',logLevel:'silent'});
  const mf=new Miniflare(convertV4MiniflareOptions({host:'127.0.0.1',port:0,cf:false,telemetry:{enabled:false},log:new Log(LogLevel.NONE),logRequests:false,
   modules:true,script:result.outputFiles[0].text,compatibilityDate:'2026-09-29',images:{binding:'IMAGES'},
-  bindings:{...envVars,SHARE_OG_ENABLED:ogEnabled,...overrides},
+  bindings:Object.fromEntries(Object.entries({...envVars,SHARE_OG_ENABLED:ogEnabled,...overrides}).filter(([,v])=>v!==undefined)),
   assets:{directory:resolve('dist'),binding:'ASSETS',run_worker_first:true,routerConfig:{has_user_worker:true,invoke_user_worker_ahead_of_assets:true},assetConfig:{html_handling:'drop-trailing-slash',not_found_handling:'404-page'}},
   outboundService:async request=>{
    if(![cfg.endpoint,previewCfg.endpoint].includes(request.url))throw Error('LOCAL_EGRESS_DENIED');
@@ -31,7 +31,7 @@ async function fixture(ogEnabled, {normalEntry=false,overrides={}}={}) {
  }));
  instances.push(mf);await mf.ready;return mf;
 }
-before(async()=>{on=await fixture('true');off=await fixture('false');normal=await fixture('true',{normalEntry:true});});
+before(async()=>{on=await fixture('true');off=await fixture('false');normal=await fixture('true',{normalEntry:true});absent=await fixture(undefined);});
 after(async()=>{for(const mf of instances)await mf.dispose();});
 const fetchLocal=(mf,p,method='GET')=>mf.dispatchFetch(previewCfg.origin+p,{method});
 const reset=()=>{state.preview=publication;state.og=revision;state.status=200;state.rev=rev;state.corrupt=false;state.calls=[];};
@@ -101,4 +101,66 @@ test('OG offline Images decoding succeeds; overlay is explicitly NOT validated',
  const ref=await sharp(source).resize(1200,630,{fit:'contain',background:'#F5FAF8'}).jpeg().toBuffer();
  const pixels=await sharp(bytes).raw().toBuffer(),reference=await sharp(ref).raw().toBuffer();assert.deepEqual(pixels,reference);
  const head=await fetchLocal(on,path,'HEAD');assert.equal(head.status,200);assert.equal(await head.text(),'');
+});
+
+// ---- PL-085 Fase 6E: compatibilidad, revocación, cabeceras y exposición (workerd, egress interceptado) ----
+const fallbackPng=readFileSync('public/og/rlvo-paleta-06.png');
+test('6E workerd: SHARE_OG_ENABLED ausente equivale a OFF y no consulta OG',async()=>{
+ reset();const page=await fetchLocal(absent,'/p/'+token);assert.equal(page.status,200);const html=await page.text();
+ assert(html.includes('/og/rlvo-paleta-06.png'));assert(!html.includes('/og/'+rev));
+ const image=await fetchLocal(absent,path);assert.equal(image.status,404);await image.arrayBuffer();
+ assert.deepEqual(state.calls.map(c=>c.url),[previewCfg.endpoint]);
+});
+test('6E workerd: cada endpoint recibe solo su clave; sin Authorization, apikey ni cookies',async()=>{
+ reset();await (await fetchLocal(on,'/p/'+token)).text();await (await fetchLocal(on,path)).arrayBuffer();
+ const preview=state.calls.filter(c=>c.url===previewCfg.endpoint),og=state.calls.filter(c=>c.url===cfg.endpoint);
+ assert.equal(preview.length,1);assert.deepEqual(og.map(c=>c.body.op),['rev','bytes']);
+ for(const c of preview){assert.equal(c.headers['x-rlvo-preview-key'],previewCfg.key);assert.equal(c.headers['x-rlvo-og-key'],undefined);}
+ for(const c of og){assert.equal(c.headers['x-rlvo-og-key'],key);assert.equal(c.headers['x-rlvo-preview-key'],undefined);}
+ for(const c of state.calls)for(const h of ['authorization','apikey','cookie'])assert.equal(c.headers[h],undefined,h);
+});
+test('6E workerd: revocación (imagen:false) entre HTML e imagen sirve la marca, nunca la foto',async()=>{
+ reset();const page=await fetchLocal(on,'/p/'+token);assert.equal(page.status,200);assert((await page.text()).includes(previewCfg.origin+path));
+ state.og=none;
+ for(const method of ['GET','HEAD']){
+  const r=await fetchLocal(on,path,method);assert.equal(r.status,200);assert.equal(r.headers.get('content-type'),'image/png');
+  assert.equal(r.headers.get('cache-control'),'no-store');assert.equal(r.headers.get('content-length'),String(fallbackPng.length));
+  const body=Buffer.from(await r.arrayBuffer());if(method==='GET')assert.deepEqual(body,fallbackPng);else assert.equal(body.length,0);
+ }
+ const again=await fetchLocal(on,'/p/'+token);const html=await again.text();assert.equal(again.status,200);
+ assert(!html.includes('/og/'+rev));assert(html.includes('/og/rlvo-paleta-06.png'));assert(!html.includes('Fotografía de la publicación'));
+ assert.equal(state.calls.filter(c=>c.body.op==='bytes').length,2,'GET y HEAD consultan bytes; sin caché');
+});
+test('6E workerd: no-store, cabeceras de seguridad, paridad HEAD/GET y cero datos privados por clase de respuesta',async()=>{
+ const cases=[
+  ['HTML disponible','/p/'+token,()=>{},200],
+  ['HTML retirada por OG','/p/'+token,()=>{state.og=unavailable;state.status=404;},404],
+  ['HTML backend 503','/p/'+token,()=>{state.og={error:'no_disponible_temporalmente'};state.status=503;},503],
+  ['HTML clave rechazada','/p/'+token,()=>{state.og={error:'no_autorizado'};state.status=401;},503],
+  ['imagen compuesta',path,()=>{},200],
+  ['imagen marca',path,()=>{state.og=none;},200],
+  ['imagen retirada',path,()=>{state.og=unavailable;state.status=404;},404],
+  ['imagen obsoleta',path,()=>{state.og={error:'rev_distinta'};state.status=409;},409],
+  ['imagen clave rechazada',path,()=>{state.og={error:'no_autorizado'};state.status=401;},503],
+  ['imagen respuesta inesperada',path,()=>{state.og={v:1,disponible:true,imagen:true,rev,extra:'PRIVATE_FIELD'};},503],
+ ];
+ for(const [name,p,setup,status] of cases){
+  const seen={};
+  for(const method of ['GET','HEAD']){
+   reset();setup();const r=await fetchLocal(on,p,method);const body=Buffer.from(await r.arrayBuffer());
+   assert.equal(r.status,status,name+' '+method);
+   assert.equal(r.headers.get('cache-control'),'no-store',name);assert.equal(r.headers.get('x-robots-tag'),'noindex, nofollow, noarchive',name);
+   assert.equal(r.headers.get('referrer-policy'),'no-referrer',name);assert.equal(r.headers.get('x-content-type-options'),'nosniff',name);
+   assert(r.headers.get('content-security-policy').startsWith("default-src 'none'"),name);
+   for(const h of ['set-cookie','x-rlvo-og-key','x-rlvo-og-rev','x-rlvo-preview-key','allow'])assert.equal(r.headers.get(h),null,name+' '+h);
+   const text=body.toString('latin1')+JSON.stringify([...r.headers]);
+   for(const secret of [key,previewCfg.key,'127.0.0.1:8902','PRIVATE_COOKIE','PRIVATE_FIELD','no_autorizado','no_disponible_temporalmente'])assert(!text.includes(secret),name+' '+secret);
+   if(method==='HEAD')assert.equal(body.length,0,name);
+   seen[method]={type:r.headers.get('content-type'),length:r.headers.get('content-length'),retry:r.headers.get('retry-after')};
+  }
+  assert.equal(seen.HEAD.type,seen.GET.type,name);assert.equal(seen.HEAD.retry,seen.GET.retry,name);
+  // workerd omite Content-Length: 0 en GET vacíos y lo conserva en HEAD; con cuerpo deben coincidir.
+  if(p===path&&status===200)assert.equal(seen.HEAD.length,seen.GET.length,name);
+  if(p===path&&status!==200)for(const v of [seen.GET.length,seen.HEAD.length])assert([null,'0'].includes(v),name);
+ }
 });

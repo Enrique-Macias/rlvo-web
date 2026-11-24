@@ -1,7 +1,8 @@
 {
   "schemaVersion": 1,
   "repository": "Enrique-Macias/rlvo-web",
-  "criticalDirectories": [".github", "scripts/ci", "src/legal"],
+  "criticalDirectories": [".github", "scripts/ci", "src/legal",
+    "worker", "scripts/share-links", "tests/share-links", "src/pages/compartir"],
   "criticalFiles": [
     "ci/control-policy.json",
     "scripts/check-legal-baseline.mjs",
@@ -23,9 +24,12 @@
     ".gitmodules",
     ".node-version",
     ".nvmrc",
-    "docs/CI_CONTROL_INTEGRITY.md"
+    "docs/CI_CONTROL_INTEGRITY.md",
+    "public/og/rlvo-paleta-06.png",
+    "public/brand/11_logo_horizontal_menta_sobre_verde.svg",
+    "public/brand/09_logo_horizontal_blanco_transparente.svg"
   ],
-  "criticalFilePrefixes": ["tests/ci-", "tests/legal-"],
+  "criticalFilePrefixes": ["tests/ci-", "tests/legal-", "wrangler"],
   "nonAuthorizableDirectories": ["legal", "src/content/legal"],
   "nonAuthorizableFiles": [
     "src/config/legal-current.json",
