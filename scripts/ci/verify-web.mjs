@@ -57,10 +57,13 @@ try {
   await checkHttp();
   run(['run', 'build']);
   await checkHttp();
+  // Worker Share Links/OG sobre el build de producción: typecheck, suites locales con egress
+  // interceptado (sin Supabase, Cloudflare ni Images remotos) y controles negativos. Sin deploy.
+  run(['run', 'ci:worker']);
   verifyDraftPolicy(old, workingInputs(root));
   assertInputsUnchanged(before, captureInputs(root));
   console.log(`${Object.keys(before).length} entradas vigiladas: SHA-256, tamaño, modo, inode, dispositivo, mtime y ctime intactos.`);
-  console.log('CI local completa: instalación desde lock, pruebas, check, ambos builds/auditorías, HTTP y ausencia de reescrituras verificados. Sin deploy ni aprobación jurídica.');
+  console.log('CI local completa: instalación desde lock, pruebas, check, ambos builds/auditorías, HTTP, Worker Share Links/OG y ausencia de reescrituras verificados. Sin deploy ni aprobación jurídica.');
 } finally {
   await stopPreview();
   rmSync(directory, { recursive: true, force: true });
