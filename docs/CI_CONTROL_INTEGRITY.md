@@ -89,10 +89,13 @@ Archivos críticos exactos:
 - `docs/CI_CONTROL_INTEGRITY.md`.
 - PL-085 6E-R2 (pendiente de PR autorizado): assets OG oficiales
   `public/og/rlvo-paleta-06.png` (fallback servido byte a byte por el Worker) y
-  `public/brand/11_logo_horizontal_menta_sobre_verde.svg` (fuente del distintivo embebido).
+  `public/brand/11_logo_horizontal_menta_sobre_verde.svg` (fuente del distintivo embebido), y
+  `public/brand/09_logo_horizontal_blanco_transparente.svg`, SVG fuente desde el que
+  `scripts/prepare-brand.mjs` (crítico) regenera el PNG en cada build.
   Su contenido aprobado queda fijado por SHA-256 en `tests/ci-worker-gates.test.mjs`.
-  Nota: `scripts/prepare-brand.mjs` (ya crítico) regenera el PNG en cada build a partir de
-  `public/brand/09_logo_horizontal_blanco_transparente.svg`, que no está en esta lista.
+  La otra entrada directa del generador, `src/styles/tokens.css` (color de fondo
+  `--brand-primary`), es un caso más amplio: define los tokens de todo el sitio y no se añade;
+  `scripts/audit-brand.mjs` (crítico) limita sus colores a la Paleta 06.
 
 Prefijos de archivo críticos: `tests/ci-` y `tests/legal-`; protegen también nuevos
 tests con esos prefijos. No se interpretan como expresiones regulares o glob.

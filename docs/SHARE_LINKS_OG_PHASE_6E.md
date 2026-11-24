@@ -134,9 +134,13 @@ cambios en rutas ya críticas. CODEOWNERS sigue sin revisión obligatoria (un so
 
 6E-R2 añade como archivos críticos los assets OG oficiales `public/og/rlvo-paleta-06.png` y
 `public/brand/11_logo_horizontal_menta_sobre_verde.svg`, con su SHA-256 aprobado fijado en
-`tests/ci-worker-gates.test.mjs`; su contenido no cambió. Laguna conocida: el PNG se regenera
-en cada build desde `public/brand/09_logo_horizontal_blanco_transparente.svg` mediante
-`scripts/prepare-brand.mjs` (crítico); ese SVG fuente no está protegido.
+`tests/ci-worker-gates.test.mjs`; su contenido no cambió. El PNG se regenera en cada build
+desde `public/brand/09_logo_horizontal_blanco_transparente.svg` mediante
+`scripts/prepare-brand.mjs` (crítico); ese SVG fuente también es crítico. Las entradas directas
+del generador quedan fijadas por prueba: son ese SVG y `src/styles/tokens.css`. El segundo es
+un caso más amplio (tokens de todo el sitio), documentado y no añadido; `audit-brand.mjs`
+(crítico) limita su paleta. Dependencias indirectas (sharp/libvips) quedan cubiertas por
+`package-lock.json` (crítico).
 
 ## 6. Verificación local
 

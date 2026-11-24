@@ -67,7 +67,9 @@ const V1={criticalDirectories:['.github','scripts/ci','src/legal'],
  nonAuthorizableFiles:['src/config/legal-current.json','docs/PL-016-WEB-INTEGRATION-CONTRACT.md','docs/LEGAL_FACTS.md',
   'src/content/legal.ts','src/pages/eliminar-cuenta.astro','src/config/site.ts']};
 const OG_ASSETS={'public/og/rlvo-paleta-06.png':'43046d631a9a94648220ac8edceae8d4ef4f13baabc8cc9e3e8d838346f34093',
- 'public/brand/11_logo_horizontal_menta_sobre_verde.svg':'cf2999f665021cdcdc9abfe918c2b45eb2a68851c40c7d8a031613dba777516b'};
+ 'public/brand/11_logo_horizontal_menta_sobre_verde.svg':'cf2999f665021cdcdc9abfe918c2b45eb2a68851c40c7d8a031613dba777516b',
+ // Fuente del fallback: scripts/prepare-brand.mjs regenera el PNG desde este SVG en cada build.
+ 'public/brand/09_logo_horizontal_blanco_transparente.svg':'9aa46903036d34fad1414beb3f0d7725e757997e7f1fd2efedc256bd90419fa8'};
 const WORKER_SCOPES={criticalDirectories:['worker','scripts/share-links','tests/share-links','src/pages/compartir'],criticalFilePrefixes:['wrangler'],
  criticalFiles:Object.keys(OG_ASSETS)};
 const covered=path=>policy.criticalDirectories.some(d=>path===d||path.startsWith(d+'/'))||policy.criticalFiles.includes(path)||
@@ -99,4 +101,18 @@ test('6E-R2: assets OG oficiales protegidos con su contenido aprobado',async()=>
  // El distintivo embebido declara el mismo SVG fuente; el fallback servido es el PNG protegido.
  assert(readFileSync('worker/og-badge.ts','utf8').includes('Source SHA-256: '+OG_ASSETS['public/brand/11_logo_horizontal_menta_sobre_verde.svg']));
  assert(readFileSync('src/config/site.ts','utf8').includes("image: '/og/rlvo-paleta-06.png'"));
+});
+test('6E-R2: toda entrada directa del generador del fallback está protegida o documentada como caso amplio',()=>{
+ const generator=readFileSync('scripts/prepare-brand.mjs','utf8');
+ assert(covered('scripts/prepare-brand.mjs'));
+ const inputs=[...generator.matchAll(/readFile\(new URL\('\.\.\/([^']+)'/g)].map(m=>m[1]).sort();
+ // tokens.css define 36 tokens de todo el sitio; audit-brand.mjs (crítico) limita sus colores a la Paleta 06.
+ const BROADER=['src/styles/tokens.css'];
+ assert.deepEqual(inputs,['public/brand/09_logo_horizontal_blanco_transparente.svg','src/styles/tokens.css'],'entradas del generador cambiaron: revisar protección');
+ for(const input of inputs)assert(covered(input)||BROADER.includes(input),input);
+ assert(/writeFile\(new URL\('rlvo-paleta-06\.png', out\)/.test(generator),'el generador escribe el fallback protegido');
+ // El manifiesto de marca (no crítico) debe coincidir con el contenido aprobado de los SVG protegidos.
+ const manifest=JSON.parse(readFileSync('src/config/brand-assets.json','utf8'));
+ for(const svg of ['09_logo_horizontal_blanco_transparente.svg','11_logo_horizontal_menta_sobre_verde.svg'])
+  assert.equal(manifest[svg],OG_ASSETS['public/brand/'+svg],svg);
 });

@@ -297,9 +297,10 @@ test('PL-085: código, test y configuración del Worker cambiados a la vez queda
 test('PL-085: assets OG, test y configuración cambiados a la vez requieren autorización', () => {
   const png = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0, 0, 0, 0]);
   const head = makeCommit({ 'public/og/rlvo-paleta-06.png': png, 'public/brand/11_logo_horizontal_menta_sobre_verde.svg': '<svg/>\n',
+    'public/brand/09_logo_horizontal_blanco_transparente.svg': '<svg/>\n',
     'tests/share-links/og-contract.test.mjs': 'Fixture\n', 'wrangler.share-links.og.staging.jsonc': '{}\n' }, base);
   assert.deepEqual(inspectControls(context(head)).changes.map(change => change.path),
-    ['public/brand/11_logo_horizontal_menta_sobre_verde.svg', 'public/og/rlvo-paleta-06.png',
+    ['public/brand/09_logo_horizontal_blanco_transparente.svg', 'public/brand/11_logo_horizontal_menta_sobre_verde.svg', 'public/og/rlvo-paleta-06.png',
       'tests/share-links/og-contract.test.mjs', 'wrangler.share-links.og.staging.jsonc']);
   assert.throws(() => verifyControls({ ...context(head), now }), errorCode('CI_AUTH_REQUIRED'));
   // Otros assets públicos siguen fuera de alcance.

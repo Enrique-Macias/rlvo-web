@@ -26,7 +26,8 @@
     ".nvmrc",
     "docs/CI_CONTROL_INTEGRITY.md",
     "public/og/rlvo-paleta-06.png",
-    "public/brand/11_logo_horizontal_menta_sobre_verde.svg"
+    "public/brand/11_logo_horizontal_menta_sobre_verde.svg",
+    "public/brand/09_logo_horizontal_blanco_transparente.svg"
   ],
   "criticalFilePrefixes": ["tests/ci-", "tests/legal-", "wrangler"],
   "nonAuthorizableDirectories": ["legal", "src/content/legal"],
